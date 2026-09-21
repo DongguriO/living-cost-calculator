@@ -33,6 +33,42 @@ export default function TravelCostCalculator() {
     activities +
     shoppingEtc;
 
+  const costItems = [
+    {
+      label: "교통비",
+      amount: transportation,
+    },
+    {
+      label: "숙박비",
+      amount: accommodation,
+    },
+    {
+      label: "식비",
+      amount: food,
+    },
+    {
+      label: "관광·체험비",
+      amount: activities,
+    },
+    {
+      label: "쇼핑·기타비",
+      amount: shoppingEtc,
+    },
+  ];
+
+  const largestCostItem = costItems.reduce(
+    (largest, item) =>
+      item.amount > largest.amount ? item : largest,
+    costItems[0]
+  );
+
+  const largestCostPercentage =
+    totalCost > 0
+      ? Math.round(
+          (largestCostItem.amount / totalCost) * 1000
+        ) / 10
+      : 0;
+
   const perPersonCost =
     people > 0 ? totalCost / people : 0;
 
@@ -272,9 +308,26 @@ export default function TravelCostCalculator() {
           {/* 비용 분석 */}
           <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
             <h2 className="text-xl font-semibold text-gray-900">
-              💳 비용 분석
+              💳 여행 비용 분석
             </h2>
 
+            {/* 가장 큰 지출 */}
+            <div className="mt-5 rounded-xl bg-gray-50 p-5">
+              <p className="text-sm text-gray-500">
+                가장 큰 지출
+              </p>
+
+              <p className="mt-1 text-xl font-semibold text-gray-900">
+                {largestCostItem.label}
+              </p>
+
+              <p className="mt-1 text-sm text-gray-600">
+                {formatWon(largestCostItem.amount)}원 · 전체의{" "}
+                {largestCostPercentage}%
+              </p>
+            </div>
+
+            {/* 항목별 비용 */}
             <div className="mt-5 space-y-4">
               <CostRow
                 label="교통비"
