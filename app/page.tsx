@@ -26,14 +26,21 @@ const availableCalculators = [
     description: "이사할 때 필요한 비용을 계산해보세요.",
     href: "/moving-cost",
   },
-];
-
-const upcomingCalculators = [
   {
     icon: "✈️",
     title: "여행 예산 계산기",
     description: "여행에 필요한 예상 비용을 계산해보세요.",
+    href: "/travel-cost",
   },
+];
+
+const upcomingCalculators = [
+  {},
+  // {
+  //   icon: "✈️",
+  //   title: "여행 예산 계산기",
+  //   description: "여행에 필요한 예상 비용을 계산해보세요.",
+  // },
 ];
 
 export default function Home() {
@@ -89,7 +96,7 @@ export default function Home() {
             })}
           </div>
           </section>
-
+{/* 
           <section className="mt-8">
           <h2 className="mb-4 text-lg font-semibold text-gray-900">
             준비 중인 계산기
@@ -123,7 +130,7 @@ export default function Home() {
               );
             })}
           </div>
-          </section>
+          </section> */}
 
         {/* 안내 */}
         <p className="mt-10 text-center text-xs text-gray-400">
