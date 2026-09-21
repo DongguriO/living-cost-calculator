@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     "자동차 유지비 계산기",
     "이사 비용 계산기",
   ],
+  verification: {
+    google: "AIzE6AJq6oDfGiuJlu7ZTz5R1him7SJSE89G-s45mdA",
+  },
 };
 
 export default function RootLayout({
