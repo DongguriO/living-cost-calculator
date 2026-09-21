@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://머니머니사이트주소.com/sitemap.xml",
+    sitemap: "https://living-cost-calculator.vercel.app/sitemap.xml",
   };
 }
