@@ -18,7 +18,6 @@ const initialValues = {
 
 export default function CarCostPage() {
   const [values, setValues] = useState(initialValues);
-  const [openSection, setOpenSection] = useState<string | null>(null);
 
   const distance = Number(values.distance || 0);
   const efficiency = Number(values.efficiency || 0);
@@ -376,244 +375,171 @@ return (
 
     {/* SEO 설명 콘텐츠 */}
     <section className="mt-6 space-y-3">
-        {/* 자동차 유지비 계산기란? */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <button
-            type="button"
-            onClick={() =>
-                setOpenSection(
-                openSection === "about" ? null : "about"
-                )
-            }
-            className="flex w-full items-center justify-between px-6 py-5 text-left"
-            >
-            <h2 className="text-lg font-semibold text-gray-900">
-                자동차 유지비 계산기란?
-            </h2>
+      <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          자동차 유지비 계산기란?
+        </summary>
 
-            <span className="ml-4 text-2xl font-light text-gray-500">
-                {openSection === "about" ? "−" : "+"}
-            </span>
-            </button>
+        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <p className="text-sm leading-7 text-gray-600">
+            자동차를 보유하면 연료비뿐만 아니라 자동차 보험료,
+            자동차세, 주차비, 통행료, 정비비 등 다양한 유지비가
+            발생합니다.
+          </p>
 
-            {openSection === "about" && (
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-                <p className="text-sm leading-7 text-gray-600">
-                자동차를 보유하면 연료비뿐만 아니라 자동차 보험료,
-                자동차세, 주차비, 통행료, 정비비 등 다양한 유지비가
-                발생합니다.
-                </p>
+          <p className="mt-3 text-sm leading-7 text-gray-600">
+            자동차 유지비 계산기는 월 주행거리와 연비, 연료 가격을
+            입력하고 보험료와 자동차세 등의 비용을 함께 반영해서
+            예상 월 유지비와 연간 유지비를 계산해볼 수 있는
+            계산기입니다.
+          </p>
 
-                <p className="mt-3 text-sm leading-7 text-gray-600">
-                자동차 유지비 계산기는 월 주행거리와 연비, 연료 가격을
-                입력하고 보험료와 자동차세 등의 비용을 함께 반영해서
-                예상 월 유지비와 연간 유지비를 계산해볼 수 있는
-                계산기입니다.
-                </p>
-
-                <p className="mt-3 text-sm leading-7 text-gray-600">
-                계산 결과에서는 하루 평균 비용도 함께 확인할 수 있어
-                자동차를 운행하면서 필요한 비용을 보다 쉽게 파악할 수
-                있습니다.
-                </p>
-            </div>
-            )}
+          <p className="mt-3 text-sm leading-7 text-gray-600">
+            계산 결과에서는 하루 평균 비용도 함께 확인할 수 있어
+            자동차를 운행하면서 필요한 비용을 보다 쉽게 파악할 수
+            있습니다.
+          </p>
         </div>
+      </details>
 
-        {/* 자동차 유지비 계산 방법 */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <button
-            type="button"
-            onClick={() =>
-                setOpenSection(
-                openSection === "method" ? null : "method"
-                )
-            }
-            className="flex w-full items-center justify-between px-6 py-5 text-left"
-            >
-            <h2 className="text-lg font-semibold text-gray-900">
-                자동차 유지비 계산 방법
-            </h2>
+      <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          자동차 유지비 계산 방법
+        </summary>
 
-            <span className="ml-4 text-2xl font-light text-gray-500">
-                {openSection === "method" ? "−" : "+"}
-            </span>
-            </button>
+        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <p className="text-sm leading-7 text-gray-600">
+            월 연료비는 월 주행거리를 연비로 나눈 뒤 연료 가격을
+            곱해서 계산합니다.
+          </p>
 
-            {openSection === "method" && (
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-                <p className="text-sm leading-7 text-gray-600">
-                월 연료비는 월 주행거리를 연비로 나눈 뒤 연료 가격을
-                곱해서 계산합니다.
-                </p>
+          <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
+            월 주행거리 ÷ 연비 × 연료 가격
+            <br />
+            = 월 연료비
+          </div>
 
-                <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                월 주행거리 ÷ 연비 × 연료 가격
-                <br />
-                = 월 연료비
-                </div>
+          <p className="mt-4 text-sm leading-7 text-gray-600">
+            연간 보험료와 자동차세는 각각 12개월로 나누어 월
+            유지비에 반영합니다.
+          </p>
 
-                <p className="mt-4 text-sm leading-7 text-gray-600">
-                연간 보험료와 자동차세는 각각 12개월로 나누어 월
-                유지비에 반영합니다.
-                </p>
+          <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
+            연간 보험료 ÷ 12
+            <br />
+            = 월 보험료
+            <br />
+            <br />
+            연간 자동차세 ÷ 12
+            <br />
+            = 월 자동차세
+          </div>
 
-                <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                연간 보험료 ÷ 12
-                <br />
-                = 월 보험료
-                <br />
-                <br />
-                연간 자동차세 ÷ 12
-                <br />
-                = 월 자동차세
-                </div>
+          <p className="mt-4 text-sm leading-7 text-gray-600">
+            최종 월 자동차 유지비는 월 연료비와 월 보험료,
+            월 자동차세, 주차비, 통행료, 정비비를 합산해서
+            계산합니다.
+          </p>
 
-                <p className="mt-4 text-sm leading-7 text-gray-600">
-                최종 월 자동차 유지비는 월 연료비와 월 보험료,
-                월 자동차세, 주차비, 통행료, 정비비를 합산해서
-                계산합니다.
-                </p>
+          <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
+            월 연료비 + 월 보험료 + 월 자동차세 + 월 주차비 + 월 통행료 + 월 정비비
+            <br />
+            = 예상 월 자동차 유지비
+          </div>
 
-                <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                월 연료비 + 월 보험료 + 월 자동차세 + 월 주차비 + 월 통행료 + 월 정비비
-                <br />
-                = 예상 월 자동차 유지비
-                </div>
-
-                <p className="mt-4 text-sm leading-7 text-gray-600">
-                연간 유지비는 월 유지비에 12개월을 곱하고, 하루 평균
-                비용은 연간 유지비를 365일로 나누어 계산합니다.
-                </p>
-            </div>
-            )}
+          <p className="mt-4 text-sm leading-7 text-gray-600">
+            연간 유지비는 월 유지비에 12개월을 곱하고, 하루 평균
+            비용은 연간 유지비를 365일로 나누어 계산합니다.
+          </p>
         </div>
+      </details>
 
-        {/* 어떤 비용을 입력할 수 있나요? */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <button
-            type="button"
-            onClick={() =>
-                setOpenSection(
-                openSection === "costs" ? null : "costs"
-                )
-            }
-            className="flex w-full items-center justify-between px-6 py-5 text-left"
-            >
-            <h2 className="text-lg font-semibold text-gray-900">
-                어떤 비용을 입력할 수 있나요?
-            </h2>
+      <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          어떤 비용을 입력할 수 있나요?
+        </summary>
 
-            <span className="ml-4 text-2xl font-light text-gray-500">
-                {openSection === "costs" ? "−" : "+"}
-            </span>
-            </button>
+        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <p className="text-sm leading-7 text-gray-600">
+            자동차의 월 주행거리, 연비, 연료 가격을 입력할 수
+            있습니다.
+          </p>
 
-            {openSection === "costs" && (
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-                <p className="text-sm leading-7 text-gray-600">
-                자동차의 월 주행거리, 연비, 연료 가격을 입력할 수
-                있습니다.
-                </p>
+          <p className="mt-3 text-sm leading-7 text-gray-600">
+            그 외에도 연간 보험료와 자동차세, 월 주차비,
+            통행료, 정비비를 입력해서 자동차 유지비를 계산할 수
+            있습니다.
+          </p>
 
-                <p className="mt-3 text-sm leading-7 text-gray-600">
-                그 외에도 연간 보험료와 자동차세, 월 주차비,
-                통행료, 정비비를 입력해서 자동차 유지비를 계산할 수
-                있습니다.
-                </p>
-
-                <p className="mt-3 text-sm leading-7 text-gray-600">
-                모든 항목을 알고 있지 않아도 계산할 수 있습니다.
-                알고 있는 비용만 입력하고 나머지는 0원으로 두면
-                입력한 비용을 기준으로 계산됩니다.
-                </p>
-            </div>
-            )}
+          <p className="mt-3 text-sm leading-7 text-gray-600">
+            모든 항목을 알고 있지 않아도 계산할 수 있습니다.
+            알고 있는 비용만 입력하고 나머지는 0원으로 두면
+            입력한 비용을 기준으로 계산됩니다.
+          </p>
         </div>
+      </details>
 
-        {/* 자주 묻는 질문 */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <button
-            type="button"
-            onClick={() =>
-                setOpenSection(
-                openSection === "faq" ? null : "faq"
-                )
-            }
-            className="flex w-full items-center justify-between px-6 py-5 text-left"
-            >
-            <h2 className="text-lg font-semibold text-gray-900">
-                자주 묻는 질문
-            </h2>
+      <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          자주 묻는 질문
+        </summary>
 
-            <span className="ml-4 text-2xl font-light text-gray-500">
-                {openSection === "faq" ? "−" : "+"}
-            </span>
-            </button>
-
-            {openSection === "faq" && (
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-                <div className="space-y-5">
-                <div>
-                    <h3 className="font-semibold text-gray-900">
-                    Q. 자동차 유지비에는 어떤 비용이 포함되나요?
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-7 text-gray-600">
-                    연료비, 자동차 보험료, 자동차세, 주차비, 통행료,
-                    정비비를 입력해서 계산할 수 있습니다.
-                    </p>
-                </div>
-
-                <div>
-                    <h3 className="font-semibold text-gray-900">
-                    Q. 연간 보험료와 자동차세는 어떻게 계산되나요?
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-7 text-gray-600">
-                    입력한 연간 보험료와 자동차세를 각각 12개월로
-                    나누어 월 유지비에 반영합니다.
-                    </p>
-                </div>
-
-                <div>
-                    <h3 className="font-semibold text-gray-900">
-                    Q. 연비에 소수점을 입력할 수 있나요?
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-7 text-gray-600">
-                    네. 연비와 월 주행거리는 소수점을 입력할 수
-                    있습니다. 예를 들어 12.5km/L와 같은 값을
-                    입력할 수 있습니다.
-                    </p>
-                </div>
-
-                <div>
-                    <h3 className="font-semibold text-gray-900">
-                    Q. 모든 비용을 입력해야 하나요?
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-7 text-gray-600">
-                    아니요. 알고 있는 비용만 입력해도 됩니다.
-                    입력하지 않은 항목은 0원으로 계산됩니다.
-                    </p>
-                </div>
-
-                <div>
-                    <h3 className="font-semibold text-gray-900">
-                    Q. 자동차 할부금도 포함되나요?
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-7 text-gray-600">
-                    현재 계산기에는 자동차 할부금 항목이 포함되어
-                    있지 않습니다. 할부금이 있다면 기타 비용 등을
-                    이용해 별도로 계산할 수 있습니다.
-                    </p>
-                </div>
-                </div>
+        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="space-y-5">
+            <div>
+              <h3 className="font-semibold text-gray-900">
+                Q. 자동차 유지비에는 어떤 비용이 포함되나요?
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-gray-600">
+                연료비, 자동차 보험료, 자동차세, 주차비, 통행료,
+                정비비를 입력해서 계산할 수 있습니다.
+              </p>
             </div>
-            )}
+
+            <div>
+              <h3 className="font-semibold text-gray-900">
+                Q. 연간 보험료와 자동차세는 어떻게 계산되나요?
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-gray-600">
+                입력한 연간 보험료와 자동차세를 각각 12개월로
+                나누어 월 유지비에 반영합니다.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-900">
+                Q. 연비에 소수점을 입력할 수 있나요?
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-gray-600">
+                네. 연비와 월 주행거리는 소수점을 입력할 수
+                있습니다. 예를 들어 12.5km/L와 같은 값을
+                입력할 수 있습니다.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-900">
+                Q. 모든 비용을 입력해야 하나요?
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-gray-600">
+                아니요. 알고 있는 비용만 입력해도 됩니다.
+                입력하지 않은 항목은 0원으로 계산됩니다.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-900">
+                Q. 자동차 할부금도 포함되나요?
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-gray-600">
+                현재 계산기에는 자동차 할부금 항목이 포함되어
+                있지 않습니다. 할부금이 있다면 기타 비용 등을
+                이용해 별도로 계산할 수 있습니다.
+              </p>
+            </div>
+          </div>
         </div>
+      </details>
     </section>
   </CalculatorLayout>
 );
