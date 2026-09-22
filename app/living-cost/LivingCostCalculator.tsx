@@ -548,8 +548,8 @@ function InputRow({
     : "";
 
   return (
-    <div className="flex items-center gap-4">
-      <label className="w-24 shrink-0 text-sm font-medium text-gray-700">
+    <div className="flex items-center gap-2 sm:gap-4">
+      <label className="w-[104px] shrink-0 whitespace-nowrap text-sm font-medium text-gray-700 sm:w-24">
         {label}
       </label>
 
@@ -559,10 +559,10 @@ function InputRow({
         value={displayValue}
         onChange={(e) => onChange(e.target.value)}
         placeholder="0"
-        className="w-full rounded-lg border border-gray-300 px-4 py-3 text-right outline-none transition focus:border-black"
+        className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-3 text-right outline-none transition focus:border-black sm:px-4"
       />
 
-      <span className="w-5 text-sm text-gray-500">
+      <span className="w-6 shrink-0 text-right text-sm text-gray-500">
         원
       </span>
     </div>

@@ -536,27 +536,26 @@ function InputRow({
   unit: string;
   onChange: (value: string) => void;
 }) {
+  const displayValue = formatInputValue(value);
+
   return (
-    <div className="flex items-center gap-3">
-      <label className="w-28 shrink-0 text-sm font-medium text-gray-700">
+    <div className="flex items-center gap-2 sm:gap-3">
+      <label className="w-[104px] shrink-0 whitespace-nowrap text-sm font-medium text-gray-700 sm:w-28">
         {label}
       </label>
 
       <input
         type="text"
         inputMode="numeric"
-        value={formatInputValue(value)}
-        onChange={(e) =>
-          onChange(e.target.value)
-        }
+        value={displayValue}
+        onChange={(e) => onChange(e.target.value)}
         placeholder="0"
-        className="w-full rounded-lg border border-gray-300 px-4 py-3 text-right outline-none transition focus:border-black"
+        className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-3 text-right outline-none transition focus:border-black sm:px-4"
       />
 
-      <span className="w-14 shrink-0 text-sm text-gray-500">
+      <span className="w-6 shrink-0 whitespace-nowrap text-right text-sm text-gray-500 sm:w-14">
         {unit}
       </span>
     </div>
   );
 }
-

@@ -220,7 +220,7 @@ export default function CalculatorLayout({
       <div className="px-4 pt-24 pb-12">
         <div className="mx-auto w-full max-w-3xl">
           <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="break-keep text-balance text-2xl font-bold leading-tight text-gray-900 sm:text-3xl">
               {title}
             </h1>
 
