@@ -33,12 +33,21 @@ const availableCalculators = [
     href: "/travel-cost",
   },
   {
-  icon: "🏘️",
-  title: "전세 vs 월세 계산기",
-  description: "전세와 월세의 예상 주거비를 비교해보세요.",
-  href: "/rent-vs-jeonse",
-},
-];
+    icon: "🏘️",
+    title: "전세 vs 월세 계산기",
+    description: "전세와 월세의 예상 주거비를 비교해보세요.",
+    href: "/rent-vs-jeonse",
+    
+  },
+  {
+    icon: "🚘",
+    title: "자동차 구매비용 계산기",
+    description: "차량 가격과 취득세, 할부 등을 입력해 구매비용을 계산해보세요.",
+    href: "/car-purchase-cost",
+  },
+].sort((a, b) =>
+  a.title.localeCompare(b.title, "ko-KR")
+);
 
 const upcomingCalculators = [
   {

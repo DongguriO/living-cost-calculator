@@ -34,11 +34,18 @@ const calculators = [
     href: "/travel-cost",
   },
   {
-    icon: "🏠",
+    icon: "🏘️",
     title: "전세 vs 월세 계산기",
     href: "/rent-vs-jeonse",
   },
-];
+  {
+    icon: "🚘",
+    title: "자동차 구매비용 계산기",
+    href: "/car-purchase-cost",
+  },
+].sort((a, b) =>
+  a.title.localeCompare(b.title, "ko-KR")
+);
 
 export default function CalculatorLayout({
   title,
