@@ -89,28 +89,38 @@ const costItems = [
   {
     label: "연료비",
     amount: monthlyFuelCost,
+    color: "blue" as const,
   },
   {
     label: "보험료",
     amount: monthlyInsurance,
+    color: "orange" as const,
   },
   {
     label: "자동차세",
     amount: monthlyTax,
+    color: "orange" as const,
   },
   {
     label: "주차비",
     amount: parking,
+    color: "emerald" as const,
   },
   {
     label: "통행료",
     amount: toll,
+    color: "emerald" as const,
   },
   {
     label: "정비비",
     amount: maintenance,
+    color: "emerald" as const,
   },
 ];
+
+const sortedCostItems = [...costItems].sort(
+  (a, b) => b.amount - a.amount
+);
 
 const largestCostItem = costItems.reduce(
   (largest, item) =>
@@ -267,46 +277,38 @@ return (
 
     {monthlyTotal > 0 && (
       <>
-        <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-          <p className="text-sm text-gray-300">
-            예상 월 자동차 유지비
-          </p>
+        <div className="mt-6 rounded-2xl bg-black p-4 text-white shadow-md sm:p-6">
+          <div className="text-center">
+            <p className="text-sm text-gray-300">
+              예상 월 자동차 유지비
+            </p>
 
-          <p className="mt-2 text-4xl font-bold">
-            {formatWon(monthlyTotal)}원
-          </p>
+            <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+              {formatWon(monthlyTotal)}원
+            </p>
+          </div>
 
-          <p className="mt-2 text-xs text-gray-400">
-            한 달 동안 예상되는 자동차 유지비예요.
-          </p>
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+              <p className="text-xs text-gray-400">
+                연간 유지비
+              </p>
 
-          <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+              <p className="mt-2 text-sm font-semibold sm:text-base">
+                {formatWon(yearlyTotal)}원
+              </p>
+            </div>
 
-          <p className="text-sm text-gray-300">
-            1년 예상 자동차 유지비
-          </p>
+            <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+              <p className="text-xs text-gray-400">
+                하루 평균 비용
+              </p>
 
-          <p className="mt-2 text-2xl font-semibold">
-            {formatWon(yearlyTotal)}원
-          </p>
-
-          <p className="mt-2 text-xs text-gray-400">
-            월 유지비 × 12개월
-          </p>
-
-          <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
-
-          <p className="text-sm text-gray-300">
-            하루 평균 비용
-          </p>
-
-          <p className="mt-2 text-2xl font-semibold">
-            {formatWon(dailyCost)}원
-          </p>
-
-          <p className="mt-2 text-xs text-gray-400">
-            연간 유지비 ÷ 365일
-          </p>
+              <p className="mt-2 text-sm font-semibold sm:text-base">
+                {formatWon(dailyCost)}원
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* 비용 분석 */}
@@ -333,41 +335,15 @@ return (
           </div>
 
           <div className="mt-4 space-y-4">
-            <CostRow
-              label="연료비"
-              amount={monthlyFuelCost}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="보험료"
-              amount={monthlyInsurance}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="자동차세"
-              amount={monthlyTax}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="주차비"
-              amount={parking}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="통행료"
-              amount={toll}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="정비비"
-              amount={maintenance}
-              total={monthlyTotal}
-            />
+            {sortedCostItems.map((item) => (
+              <CostRow
+                key={item.label}
+                label={item.label}
+                amount={item.amount}
+                total={monthlyTotal}
+                color={item.color}
+              />
+            ))}
           </div>
         </div>
       </>
@@ -602,15 +578,34 @@ function CostRow({
   label,
   amount,
   total,
+  color,
 }: {
   label: string;
   amount: number;
   total: number;
+  color: "blue" | "orange" | "emerald";
 }) {
   const percentage =
     total > 0
       ? Math.round((amount / total) * 1000) / 10
       : 0;
+
+  const colorStyles = {
+    blue: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    orange: {
+      text: "text-orange-600",
+      bar: "bg-orange-500",
+    },
+    emerald: {
+      text: "text-emerald-600",
+      bar: "bg-emerald-500",
+    },
+  };
+
+  const style = colorStyles[color];
 
   return (
     <div>
@@ -619,15 +614,17 @@ function CostRow({
           {label}
         </span>
 
-        <span className="text-gray-500">
-          {new Intl.NumberFormat("ko-KR").format(amount)}원 ·{" "}
-          {percentage}%
+        <span className={`font-medium ${style.text}`}>
+          {new Intl.NumberFormat("ko-KR").format(
+            Math.round(amount)
+          )}
+          원 · {percentage}%
         </span>
       </div>
 
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
         <div
-          className="h-full rounded-full bg-gray-800"
+          className={`h-full rounded-full ${style.bar}`}
           style={{
             width: `${Math.min(percentage, 100)}%`,
           }}
