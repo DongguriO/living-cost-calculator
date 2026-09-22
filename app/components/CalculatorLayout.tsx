@@ -43,6 +43,16 @@ const calculators = [
     title: "자동차 구매비용 계산기",
     href: "/car-purchase-cost",
   },
+  {
+    icon: "💍",
+    title: "결혼/웨딩 비용 계산기",
+    href: "/wedding-cost",
+  },
+  {
+    icon: "👶",
+    title: "출산·육아 비용 계산기",
+    href: "/childcare-cost",
+  },
 ].sort((a, b) =>
   a.title.localeCompare(b.title, "ko-KR")
 );
