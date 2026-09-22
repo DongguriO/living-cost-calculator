@@ -15,7 +15,13 @@ const initialValues = {
   etc: "",
 };
 
-const categories = [
+type ExpenseGroup = "주거비" | "공과금" | "생활비";
+
+const categories: {
+  key: string;
+  label: string;
+  group: ExpenseGroup;
+}[] = [
   { key: "rent", label: "월세", group: "주거비" },
   { key: "maintenance", label: "관리비", group: "주거비" },
   { key: "electricity", label: "전기요금", group: "공과금" },
@@ -25,6 +31,21 @@ const categories = [
   { key: "transport", label: "교통비", group: "생활비" },
   { key: "etc", label: "기타", group: "생활비" },
 ];
+
+const groupStyles = {
+  주거비: {
+    text: "text-blue-600",
+    bar: "bg-blue-500",
+  },
+  공과금: {
+    text: "text-orange-600",
+    bar: "bg-orange-500",
+  },
+  생활비: {
+    text: "text-emerald-600",
+    bar: "bg-emerald-500",
+  },
+} as const;
 
 export default function Home() {
   const [values, setValues] = useState(initialValues);
@@ -212,51 +233,68 @@ export default function Home() {
 
       {/* 결과 */}
       {total > 0 && (
-        <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-          <p className="text-sm text-gray-300">
-            예상 월 생활비
-          </p>
+        <div className="mt-6 rounded-2xl bg-black p-2 text-white shadow-md sm:p-6">
+          <div className="text-center">
+            <p className="text-sm text-gray-300">
+              예상 월 생활비
+            </p>
 
-          <p className="mt-2 text-4xl font-bold">
-            {formatWon(total)}원
-          </p>
+            <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+              {formatWon(total)}원
+            </p>
+          </div>
 
-          <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+          <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="rounded-xl bg-gray-900 px-1 py-4 text-center">
+              <p className="text-xs text-gray-400">
+                연간 생활비
+              </p>
 
-          <p className="text-sm text-gray-300">
-            1년 예상 생활비
-          </p>
+              <p className="mt-2 text-sm font-semibold sm:text-base">
+                {formatWon(yearlyTotal)}원
+              </p>
+            </div>
 
-          <p className="mt-2 text-2xl font-semibold">
-            {formatWon(yearlyTotal)}원
-          </p>
+            <div className="rounded-xl bg-gray-900 px-1 py-4 text-center">
+              <p className="text-xs text-gray-400">
+                {remainingMoney < 0 ? "초과 지출" : "남는 돈"}
+              </p>
 
-          <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+              <p
+                className={`mt-2 text-sm font-semibold sm:text-base ${
+                  remainingMoney < 0 ? "text-red-400" : "text-white"
+                }`}
+              >
+                {remainingMoney < 0 ? "-" : ""}
+                {formatWon(Math.abs(remainingMoney))}원
+              </p>
+            </div>
 
-          <p className="text-sm text-gray-300">
-            월 수입에서 남는 돈
-          </p>
+            <div className="rounded-xl bg-gray-900 px-1 py-4 text-center">
+              <p className="text-xs text-gray-400">
+                저축률
+              </p>
 
-          <p
-            className={`mt-2 text-2xl font-semibold ${
-              remainingMoney < 0 ? "text-red-400" : "text-white"
-            }`}
-          >
-            {remainingMoney < 0 ? "-" : ""}
-            {formatWon(Math.abs(remainingMoney))}원
-          </p>
+              <p
+                className={`mt-2 text-sm font-semibold sm:text-base ${
+                  savingRate < 0 ? "text-red-400" : "text-white"
+                }`}
+              >
+                {savingRate}%
+              </p>
+            </div>
+          </div>
+          {remainingMoney < 0 && (
+            <div className="mt-4 rounded-xl bg-red-950/40 px-4 py-3 text-center">
+              <p className="text-sm font-medium text-red-300">
+                입력한 생활비가 월 수입보다 많아요.
+              </p>
 
-          <p className="mt-5 text-sm text-gray-300">
-            저축률
-          </p>
-
-          <p
-            className={`mt-2 text-2xl font-semibold ${
-              savingRate < 0 ? "text-red-400" : "text-white"
-            }`}
-          >
-            {savingRate}%
-          </p>
+              <p className="mt-1 text-xs leading-5 text-red-200/70">
+                지출 항목을 다시 확인하거나 생활비를 줄여보세요.
+              </p>
+            </div>
+          )}
         </div>
       )}
 
@@ -274,13 +312,34 @@ export default function Home() {
                 가장 큰 지출
               </p>
 
-              <p className="mt-1 text-lg font-semibold text-gray-900">
-                {topExpense.label}
+              <div className="mt-2 flex items-end justify-between gap-3">
+                <p className="text-lg font-semibold text-gray-900">
+                  {topExpense.label}
+                </p>
+
+                <p className="shrink-0 text-sm font-medium text-gray-700">
+                  {getPercentage(topExpense.amount)}%
+                </p>
+              </div>
+
+              <p className="mt-1 text-sm text-gray-500">
+                {formatWon(topExpense.amount)}원
               </p>
 
-              <p className="mt-1 text-sm text-gray-600">
-                {formatWon(topExpense.amount)}원 · 전체의{" "}
-                {getPercentage(topExpense.amount)}%
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-200">
+                <div
+                  className="h-full rounded-full bg-black"
+                  style={{
+                    width: `${Math.min(
+                      getPercentage(topExpense.amount),
+                      100
+                    )}%`,
+                  }}
+                />
+              </div>
+
+              <p className="mt-2 text-xs text-gray-400">
+                전체 생활비에서 차지하는 비중
               </p>
             </div>
           )}
@@ -293,7 +352,7 @@ export default function Home() {
                   주거비
                 </p>
 
-                <p className="font-semibold text-gray-900 sm:mt-1">
+                <p className="font-semibold text-blue-600 sm:mt-1">
                   {formatWon(housingCost)}원
                 </p>
               </div>
@@ -309,7 +368,7 @@ export default function Home() {
                   공과금
                 </p>
 
-                <p className="font-semibold text-gray-900 sm:mt-1">
+                <p className="font-semibold text-orange-600 sm:mt-1">
                   {formatWon(utilityCost)}원
                 </p>
               </div>
@@ -325,7 +384,7 @@ export default function Home() {
                   생활비
                 </p>
 
-                <p className="font-semibold text-gray-900 sm:mt-1">
+                <p className="font-semibold text-emerald-600 sm:mt-1">
                   {formatWon(livingCost)}원
                 </p>
               </div>
@@ -336,57 +395,39 @@ export default function Home() {
             </div>
           </div>
 
-          {housingCost > 0 && (
-            <div className="mt-4">
-              <div className="flex justify-between text-sm">
-                <span className="font-medium text-gray-700">
-                  주거비
-                </span>
-
-                <span className="text-gray-500">
-                  {formatWon(housingCost)}원 · {housingPercentage}%
-                </span>
-              </div>
-
-              <div className="mt-2 h-3 overflow-hidden rounded-full bg-gray-200">
-                <div
-                  className="h-full rounded-full bg-black"
-                  style={{
-                    width: `${Math.min(housingPercentage, 100)}%`,
-                  }}
-                />
-              </div>
-            </div>
-          )}
 
           {/* 항목별 지출 */}
-          <div className="mt-6 space-y-5">
-            {expenseData.map((expense) => (
-              <div key={expense.key}>
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium text-gray-700">
-                    {expense.label}
-                  </span>
+          <div className="mt-6 space-y-4">
+            {expenseData.map((expense) => {
+              const style = groupStyles[expense.group];
 
-                  <span className="text-gray-500">
-                    {formatWon(expense.amount)}원 ·{" "}
-                    {getPercentage(expense.amount)}%
-                  </span>
-                </div>
+              return (
+                <div key={expense.key}>
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-gray-700">
+                      {expense.label}
+                    </span>
 
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-                  <div
-                    className="h-full rounded-full bg-gray-800"
-                    style={{
-                      width: `${Math.min(
-                        getPercentage(expense.amount),
-                        100
-                      )}%`,
-                    }}
-                  />
+                    <span className={`font-medium ${style.text}`}>
+                      {formatWon(expense.amount)}원 ·{" "}
+                      {getPercentage(expense.amount)}%
+                    </span>
+                  </div>
+
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className={`h-full rounded-full ${style.bar}`}
+                      style={{
+                        width: `${Math.min(
+                          getPercentage(expense.amount),
+                          100
+                        )}%`,
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
