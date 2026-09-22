@@ -84,7 +84,7 @@ const calculators: Calculator[] = [
       "출산", "육아", "출산비용", "병원", "진료비", "산후조리", "육아용품", "수유", "기저귀", "보육비", "교육비", "의료비",
     ],
   },
-];
+].sort((a, b) => a.title.localeCompare(b.title, "ko-KR"));
 
 export default function CalculatorsPage() {
   return (
