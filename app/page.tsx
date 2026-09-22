@@ -32,6 +32,12 @@ const availableCalculators = [
     description: "여행에 필요한 예상 비용을 계산해보세요.",
     href: "/travel-cost",
   },
+  {
+  icon: "🏘️",
+  title: "전세 vs 월세 계산기",
+  description: "전세와 월세의 예상 주거비를 비교해보세요.",
+  href: "/rent-vs-jeonse",
+},
 ];
 
 const upcomingCalculators = [
