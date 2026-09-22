@@ -6,9 +6,9 @@ import CalculatorSearch, {
 } from "../components/CalculatorSearch";
 
 export const metadata: Metadata = {
-  title: "전체 계산기 | 머니머니",
+  title: "생활비·비용 계산기 모음 | 머니머니",
   description:
-    "생활비, 자동차, 이사, 여행, 주거, 결혼, 육아 등 다양한 비용 계산기를 한곳에서 확인해보세요.",
+    "자취 생활비, 자동차 유지비, 이사 비용, 여행 예산, 전세·월세, 자동차 구매, 결혼·육아 비용을 한곳에서 계산해보세요.",
 };
 
 const calculators: Calculator[] = [
