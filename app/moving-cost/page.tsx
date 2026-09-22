@@ -7,6 +7,6 @@ export const metadata: Metadata = {
     "포장이사, 용달, 사다리차, 입주청소 등 이사에 필요한 예상 비용을 간편하게 계산해보세요.",
 };
 
-export default function CarCostPage() {
+export default function MovingCostPage() {
   return <MovingCostCalculator />;
 }
