@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import CarCostCalculator from "./CarCostCalculator";
 
 export const metadata: Metadata = {
-  title: "자동차 유지비 계산기",
+  title: "자동차 유지비 계산기 | 머니머니",
   description:
-    "월 주행거리, 연비, 연료비, 보험료, 자동차세 등을 입력해 자동차 유지비를 계산해보세요.",
+    "연료비, 자동차 보험료, 자동차세, 주차비, 통행료, 정비비 등을 포함한 자동차 유지비를 계산해보세요.",
 };
 
 export default function CarCostPage() {

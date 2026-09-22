@@ -38,5 +38,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://living-cost-calculator.vercel.app/childcare-cost",
       lastModified: new Date(),
     },
+    {
+      url: "https://living-cost-calculator.vercel.app/privacy",
+      lastModified: new Date(),
+    },
+    {
+      url: "https://living-cost-calculator.vercel.app/contact",
+      lastModified: new Date(),
+    },
   ];
 }
