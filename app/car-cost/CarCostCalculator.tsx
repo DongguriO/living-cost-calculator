@@ -14,6 +14,8 @@ const initialValues = {
   maintenance: "",
 };
 
+
+
 export default function CarCostPage() {
   const [values, setValues] = useState(initialValues);
   const [openSection, setOpenSection] = useState<string | null>(null);
@@ -83,6 +85,46 @@ export default function CarCostPage() {
     new Intl.NumberFormat("ko-KR", {
       maximumFractionDigits: 2,
     }).format(value);
+
+const costItems = [
+  {
+    label: "연료비",
+    amount: monthlyFuelCost,
+  },
+  {
+    label: "보험료",
+    amount: monthlyInsurance,
+  },
+  {
+    label: "자동차세",
+    amount: monthlyTax,
+  },
+  {
+    label: "주차비",
+    amount: parking,
+  },
+  {
+    label: "통행료",
+    amount: toll,
+  },
+  {
+    label: "정비비",
+    amount: maintenance,
+  },
+];
+
+const largestCostItem = costItems.reduce(
+  (largest, item) =>
+    item.amount > largest.amount ? item : largest,
+  costItems[0]
+);
+
+const largestCostPercentage =
+  monthlyTotal > 0
+    ? Math.round(
+        (largestCostItem.amount / monthlyTotal) * 1000
+      ) / 10
+    : 0;
 
 return (
   <CalculatorLayout
@@ -274,17 +316,20 @@ return (
             ⛽ 비용 분석
           </h2>
 
-          <div className="mt-5 rounded-xl bg-gray-50 p-4">
+          <div className="mt-5 rounded-xl bg-gray-50 p-5">
             <p className="text-sm text-gray-500">
-              월 연료비
+              가장 큰 지출
             </p>
 
-            <p className="mt-1 text-lg font-semibold text-gray-900">
-              {formatWon(monthlyFuelCost)}원
+            <p className="mt-1 text-xl font-semibold text-gray-900">
+              {largestCostItem.label}
             </p>
 
             <p className="mt-1 text-sm text-gray-600">
-              월 {formatWon(distance)}km 주행 기준
+              {new Intl.NumberFormat("ko-KR").format(
+                Math.round(largestCostItem.amount)
+              )}
+              원 · 전체의 {largestCostPercentage}%
             </p>
           </div>
 
