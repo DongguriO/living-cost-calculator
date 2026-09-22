@@ -17,46 +17,105 @@ const calculators = [
   {
     icon: "🏠",
     title: "자취 생활비 계산기",
+    description: "월세, 식비, 교통비 등 자취 생활비를 계산해보세요.",
     href: "/living-cost",
   },
   {
     icon: "🚗",
     title: "자동차 유지비 계산기",
+    description: "연료비, 보험료, 자동차세 등 차량 유지비를 계산해보세요.",
     href: "/car-cost",
   },
   {
     icon: "📦",
     title: "이사 비용 계산기",
+    description: "포장이사, 운반비 등 이사에 필요한 비용을 계산해보세요.",
     href: "/moving-cost",
   },
   {
     icon: "✈️",
     title: "여행 예산 계산기",
+    description: "교통, 숙박, 식비 등을 포함한 여행 예산을 계산해보세요.",
     href: "/travel-cost",
   },
   {
     icon: "🏘️",
     title: "전세 vs 월세 계산기",
+    description: "전세대출 이자와 월세를 비교해보세요.",
     href: "/rent-vs-jeonse",
   },
   {
     icon: "🚘",
     title: "자동차 구매비용 계산기",
+    description: "차량 가격, 취등록세, 보험료 등을 계산해보세요.",
     href: "/car-purchase-cost",
   },
   {
     icon: "💍",
     title: "결혼/웨딩 비용 계산기",
+    description: "예식장, 식사, 스드메, 신혼여행 비용을 계산해보세요.",
     href: "/wedding-cost",
   },
   {
     icon: "👶",
     title: "출산·육아 비용 계산기",
+    description: "출산과 초기 육아에 필요한 예상 비용을 계산해보세요.",
     href: "/childcare-cost",
   },
 ].sort((a, b) =>
   a.title.localeCompare(b.title, "ko-KR")
 );
+
+{/* 연관 계산기 추천 */}
+const relatedCalculators: Record<string, string[]> = {
+  "/living-cost": [
+    "/rent-vs-jeonse",
+    "/car-cost",
+    "/moving-cost",
+  ],
+
+  "/car-cost": [
+    "/car-purchase-cost",
+    "/living-cost",
+    "/travel-cost",
+  ],
+
+  "/moving-cost": [
+    "/living-cost",
+    "/rent-vs-jeonse",
+    "/car-cost",
+  ],
+
+  "/travel-cost": [
+    "/car-cost",
+    "/living-cost",
+    "/car-purchase-cost",
+  ],
+
+  "/rent-vs-jeonse": [
+    "/living-cost",
+    "/moving-cost",
+    "/car-purchase-cost",
+  ],
+
+  "/car-purchase-cost": [
+    "/car-cost",
+    "/rent-vs-jeonse",
+    "/living-cost",
+  ],
+
+  "/wedding-cost": [
+    "/childcare-cost",
+    "/living-cost",
+    "/travel-cost",
+  ],
+
+  "/childcare-cost": [
+    "/wedding-cost",
+    "/living-cost",
+    "/rent-vs-jeonse",
+  ],
+};
 
 export default function CalculatorLayout({
   title,
@@ -67,6 +126,11 @@ export default function CalculatorLayout({
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const related = (relatedCalculators[pathname] ?? [])
+    .map((href) =>
+      calculators.find((calculator) => calculator.href === href)
+    )
+    .filter(Boolean);
 
   // 메뉴가 열려 있을 때 배경 스크롤 방지
   useEffect(() => {
@@ -168,6 +232,45 @@ export default function CalculatorLayout({
           {children}
         </div>
       </div>
+      {related.length > 0 && (
+        <section className="mx-auto w-full max-w-3xl px-4 pb-12">
+          <div className="border-t border-gray-200 pt-8">
+            <h2 className="text-lg font-bold text-gray-900">
+              이런 계산기도 사용해보세요
+            </h2>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {related.map((calculator) => {
+                if (!calculator) return null;
+
+                return (
+                  <Link
+                    key={calculator.href}
+                    href={calculator.href}
+                    className="rounded-2xl bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-xl">
+                      {calculator.icon}
+                    </div>
+
+                    <h3 className="mt-3 font-semibold text-gray-900">
+                      {calculator.title}
+                    </h3>
+
+                    <p className="mt-1 text-xs leading-5 text-gray-500">
+                      {calculator.description}
+                    </p>
+
+                    <p className="mt-3 text-xs font-medium text-gray-400">
+                      계산해보기 →
+                    </p>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       <Footer />
 
