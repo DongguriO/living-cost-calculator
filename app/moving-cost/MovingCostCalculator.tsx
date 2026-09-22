@@ -69,6 +69,41 @@ export default function MovingCostPage() {
     amount: getAmount(category.key),
   }));
 
+  const sortedCategoryData = [...categoryData].sort(
+    (a, b) => b.amount - a.amount
+  );
+
+  const categoryColors = {
+    moving: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    packing: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    ladder: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    cleaning: {
+      text: "text-orange-600",
+      bar: "bg-orange-500",
+    },
+    disposal: {
+      text: "text-orange-600",
+      bar: "bg-orange-500",
+    },
+    brokerage: {
+      text: "text-emerald-600",
+      bar: "bg-emerald-500",
+    },
+    etc: {
+      text: "text-emerald-600",
+      bar: "bg-emerald-500",
+    },
+  } as const;
+
   const topExpense =
     total > 0
       ? [...categoryData].sort(
@@ -152,30 +187,40 @@ export default function MovingCostPage() {
       {/* 결과 */}
       {total > 0 && (
         <>
-          <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-            <p className="text-sm text-gray-300">
-              예상 이사 비용
-            </p>
+          <div className="mt-6 rounded-2xl bg-black p-4 text-white shadow-md sm:p-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-300">
+                예상 이사 비용
+              </p>
 
-            <p className="mt-2 text-4xl font-bold">
-              {formatWon(total)}원
-            </p>
+              <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+                {formatWon(total)}원
+              </p>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              입력한 비용을 모두 합산한 금액이에요.
-            </p>
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  예비비
+                </p>
 
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(reserve)}원
+                </p>
+              </div>
 
-            <p className="text-sm text-gray-300">
-              예비비 포함 예상 비용
-            </p>
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  예비비 포함 예상 비용
+                </p>
 
-            <p className="mt-2 text-2xl font-semibold">
-              {formatWon(recommendedBudget)}원
-            </p>
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(recommendedBudget)}원
+                </p>
+              </div>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
+            <p className="mt-4 text-center text-xs leading-5 text-gray-400">
               입력한 비용의 10%를 예비비로 추가했어요.
             </p>
           </div>
@@ -205,33 +250,39 @@ export default function MovingCostPage() {
             )}
 
             {/* 항목별 비용 */}
-            <div className="mt-6 space-y-5">
-              {categoryData.map((category) => (
-                <div key={category.key}>
-                  <div className="flex justify-between gap-4 text-sm">
-                    <span className="font-medium text-gray-700">
-                      {category.label}
-                    </span>
+            <div className="mt-6 space-y-4">
+              {sortedCategoryData.map((category) => {
+                const style = categoryColors[category.key];
 
-                    <span className="shrink-0 text-gray-500">
-                      {formatWon(category.amount)}원 ·{" "}
-                      {getPercentage(category.amount)}%
-                    </span>
-                  </div>
+                return (
+                  <div key={category.key}>
+                    <div className="flex items-center justify-between gap-2 text-sm">
+                      <span className="min-w-0 font-medium text-gray-700">
+                        {category.label}
+                      </span>
 
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-                    <div
-                      className="h-full rounded-full bg-gray-800"
-                      style={{
-                        width: `${Math.min(
-                          getPercentage(category.amount),
-                          100
-                        )}%`,
-                      }}
-                    />
+                      <span
+                        className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
+                      >
+                        {formatWon(category.amount)}원 ·{" "}
+                        {getPercentage(category.amount)}%
+                      </span>
+                    </div>
+
+                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
+                      <div
+                        className={`h-full rounded-full ${style.bar}`}
+                        style={{
+                          width: `${Math.min(
+                            getPercentage(category.amount),
+                            100
+                          )}%`,
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </>
@@ -240,11 +291,11 @@ export default function MovingCostPage() {
         {/* SEO 설명 콘텐츠 */}
         <section className="mt-6 space-y-3">
           <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
               📦 이사 비용 계산기란?
             </summary>
 
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
               <p className="text-sm leading-7 text-gray-600">
                 이사 비용 계산기는 이사할 때 발생할 수 있는 다양한 비용을
                 한 번에 계산해볼 수 있는 계산기입니다.
@@ -265,20 +316,18 @@ export default function MovingCostPage() {
           </details>
 
           <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
               이사 비용 계산 방법
             </summary>
 
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
               <p className="text-sm leading-7 text-gray-600">
                 예상 이사 비용은 입력한 각 비용 항목을 모두 더해서
                 계산합니다.
               </p>
 
               <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                이삿짐 운반비 + 포장비 + 사다리차 비용 + 청소비
-                <br />
-                + 폐기물 처리비 + 부동산 중개보수 + 기타 비용
+                이삿짐 운반비 + 포장비 + 사다리차 비용 + 청소비 + 폐기물 처리비 + 부동산 중개보수 + 기타 비용
                 <br />
                 = 예상 이사 비용
               </div>
@@ -307,11 +356,11 @@ export default function MovingCostPage() {
           </details>
 
           <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
               어떤 비용을 입력할 수 있나요?
             </summary>
 
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
               <p className="text-sm leading-7 text-gray-600">
                 이사 비용 계산기에서는 이사 과정에서 발생할 수 있는
                 다양한 비용을 직접 입력할 수 있습니다.
@@ -335,11 +384,11 @@ export default function MovingCostPage() {
           </details>
 
           <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
               자주 묻는 질문
             </summary>
 
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
               <div className="space-y-5">
                 <div>
                   <h3 className="font-semibold text-gray-900">
