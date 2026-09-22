@@ -41,12 +41,21 @@ const availableCalculators = [
 ];
 
 const upcomingCalculators = [
-  {},
-  // {
-  //   icon: "✈️",
-  //   title: "여행 예산 계산기",
-  //   description: "여행에 필요한 예상 비용을 계산해보세요.",
-  // },
+  {
+    icon: "🚗",
+    title: "자동차 구매비용 계산기",
+    description: "차량 구매에 필요한 초기 비용과 유지비를 계산해보세요.",
+  },
+  {
+    icon: "💍",
+    title: "결혼·웨딩 비용 계산기",
+    description: "결혼식과 신혼 준비에 필요한 예상 비용을 계산해보세요.",
+  },
+  {
+    icon: "👶",
+    title: "출산·육아 비용 계산기",
+    description: "출산과 육아에 필요한 예상 비용을 계산해보세요.",
+  },
 ];
 
 export default function Home() {
@@ -102,15 +111,14 @@ export default function Home() {
             })}
           </div>
           </section>
-{/* 
-          <section className="mt-8">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            준비 중인 계산기
-          </h2>
 
-          <div className="space-y-3">
-            {upcomingCalculators.map((calculator) => {
-              return (
+          <section className="mt-8">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+              준비 중인 계산기
+            </h2>
+
+            <div className="space-y-3">
+              {upcomingCalculators.map((calculator) => (
                 <div
                   key={calculator.title}
                   className="flex items-center gap-4 rounded-2xl bg-white p-5 opacity-60 shadow-sm"
@@ -133,10 +141,9 @@ export default function Home() {
                     준비 중
                   </div>
                 </div>
-              );
-            })}
-          </div>
-          </section> */}
+              ))}
+            </div>
+          </section>
 
         {/* 안내 */}
         <p className="mt-10 text-center text-xs text-gray-400">
