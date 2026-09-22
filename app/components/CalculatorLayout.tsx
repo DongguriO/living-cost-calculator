@@ -66,6 +66,7 @@ export default function CalculatorLayout({
 }: CalculatorLayoutProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
   // 메뉴가 열려 있을 때 배경 스크롤 방지
   useEffect(() => {
@@ -79,11 +80,52 @@ export default function CalculatorLayout({
       document.body.style.overflow = "";
     };
   }, [isMenuOpen]);
+  
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // 최상단에서는 항상 표시
+      if (currentScrollY <= 10) {
+        setIsHeaderVisible(true);
+        lastScrollY = currentScrollY;
+        return;
+      }
+
+      // 위로 스크롤
+      if (currentScrollY < lastScrollY) {
+        setIsHeaderVisible(true);
+      }
+
+      // 아래로 스크롤
+      else if (currentScrollY > lastScrollY + 5) {
+        setIsHeaderVisible(false);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <main className="min-h-screen bg-gray-100">
       {/* 헤더 */}
-      <header className="border-b bg-white">
+      <header
+        className={`fixed inset-x-0 top-0 z-30 border-b bg-white transition-transform duration-300 ease-out ${
+          isHeaderVisible
+            ? "translate-y-0"
+            : "-translate-y-full"
+        }`}
+      >
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-4">
           <Link
             href="/"
@@ -111,7 +153,7 @@ export default function CalculatorLayout({
       </header>
 
       {/* 본문 */}
-      <div className="px-4 pt-5 pb-12">
+      <div className="px-4 pt-24 pb-12">
         <div className="mx-auto w-full max-w-3xl">
           <div className="mb-6 text-center">
             <h1 className="text-3xl font-bold text-gray-900">
