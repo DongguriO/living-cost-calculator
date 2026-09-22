@@ -46,5 +46,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://living-cost-calculator.vercel.app/contact",
       lastModified: new Date(),
     },
+    {
+      url: "https://living-cost-calculator.vercel.app/calculators",
+      lastModified: new Date(),
+    },
   ];
 }
