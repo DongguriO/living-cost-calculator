@@ -7,10 +7,18 @@ export default function Footer() {
         <div className="text-center">
           <Link
             href="/"
-            className="text-lg font-bold text-gray-900 transition hover:opacity-70"
-          >
-            💰 머니머니
-          </Link>
+            className="inline-flex items-center gap-2 text-lg font-bold text-gray-900 transition hover:opacity-70"
+            >
+            <img
+                src="/icon.svg"
+                alt=""
+                width={28}
+                height={28}
+                className="h-7 w-7"
+            />
+
+            <span>머니머니</span>
+            </Link>
 
           <p className="mt-2 text-sm text-gray-500">
             생활에 필요한 다양한 비용을 쉽게 계산해보세요.

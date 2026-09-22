@@ -41,9 +41,19 @@ export default function Home() {
       <div className="mx-auto w-full max-w-2xl px-4 py-12">
         {/* 로고 */}
         <header className="text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-            💰 머니머니
-          </h1>
+          <div className="flex items-center justify-center gap-3">
+            <img
+              src="/icon.svg"
+              alt=""
+              width={48}
+              height={48}
+              className="h-12 w-12"
+            />
+
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+              머니머니
+            </h1>
+          </div>
 
           <p className="mt-4 text-gray-600">
             생활에 필요한 돈을 쉽고 빠르게 계산해보세요.

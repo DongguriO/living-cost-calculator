@@ -193,9 +193,17 @@ export default function CalculatorLayout({
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-4">
           <Link
             href="/"
-            className="text-xl font-bold text-gray-900 transition hover:opacity-70"
+            className="flex items-center gap-2 text-xl font-bold text-gray-900 transition hover:opacity-70"
           >
-            💰 머니머니
+            <img
+              src="/icon.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8"
+            />
+
+            <span>머니머니</span>
           </Link>
 
           <div className="flex items-center gap-3">

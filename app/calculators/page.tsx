@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import CalculatorSearch, {
   type Calculator,
 } from "../components/CalculatorSearch";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "생활비·비용 계산기 모음 | 머니머니",
@@ -93,10 +94,17 @@ export default function CalculatorsPage() {
         <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-4">
           <Link
             href="/"
-            className="text-lg font-bold text-gray-900 transition hover:opacity-70"
-          >
-            💰 머니머니
-          </Link>
+            className="inline-flex items-center gap-2 text-lg font-bold text-gray-900 transition hover:opacity-70"
+            >
+            <Image
+                src="/icon.svg"
+                alt=""
+                width={28}
+                height={28}
+                className="h-7 w-7"
+            />
+            <span>머니머니</span>
+            </Link>
 
           <Link
             href="/"
