@@ -4,49 +4,152 @@ import { useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
 
 const initialValues = {
-  distance: "",
-  efficiency: "",
-  fuelPrice: "",
+  vehiclePrice: "",
+  options: "",
+  acquisitionTaxRate: "7",
+  registrationFee: "",
+  deliveryFee: "",
   insurance: "",
-  tax: "",
-  parking: "",
-  toll: "",
-  maintenance: "",
+  downPayment: "",
+  loanRate: "",
+  loanMonths: "",
 };
 
+const categories = [
+  { key: "vehiclePrice", label: "차량 가격" },
+  { key: "options", label: "옵션/추가 장비" },
+  { key: "acquisitionTax", label: "취득세" },
+  { key: "registrationFee", label: "등록·기타 비용" },
+  { key: "deliveryFee", label: "탁송·배송비" },
+  { key: "insurance", label: "첫해 자동차보험" },
+] as const;
 
-
-export default function CarCostPage() {
+export default function CarPurchaseCostCalculator() {
   const [values, setValues] = useState(initialValues);
 
-  const distance = Number(values.distance || 0);
-  const efficiency = Number(values.efficiency || 0);
-  const fuelPrice = Number(values.fuelPrice || 0);
-
+  const vehiclePrice = Number(values.vehiclePrice || 0);
+  const options = Number(values.options || 0);
+  const acquisitionTaxRate = Number(
+    values.acquisitionTaxRate || 0
+  );
+  const registrationFee = Number(
+    values.registrationFee || 0
+  );
+  const deliveryFee = Number(values.deliveryFee || 0);
   const insurance = Number(values.insurance || 0);
-  const tax = Number(values.tax || 0);
-  const parking = Number(values.parking || 0);
-  const toll = Number(values.toll || 0);
-  const maintenance = Number(values.maintenance || 0);
+  const downPayment = Number(values.downPayment || 0);
+  const loanRate = Number(values.loanRate || 0);
+  const loanMonths = Number(values.loanMonths || 0);
 
-  const monthlyFuelCost =
-    efficiency > 0
-      ? (distance / efficiency) * fuelPrice
-      : 0;
+  // 차량 가격 + 옵션
+  const taxableVehiclePrice = vehiclePrice + options;
 
-  const monthlyInsurance = insurance / 12;
-  const monthlyTax = tax / 12;
+  // 취득세
+  const acquisitionTax =
+    taxableVehiclePrice * (acquisitionTaxRate / 100);
 
-  const monthlyTotal =
-    monthlyFuelCost +
-    monthlyInsurance +
-    monthlyTax +
-    parking +
-    toll +
-    maintenance;
+  // 차량 구매에 필요한 전체 비용
+  const totalPurchaseCost =
+    taxableVehiclePrice +
+    acquisitionTax +
+    registrationFee +
+    deliveryFee +
+    insurance;
 
-  const yearlyTotal = monthlyTotal * 12;
-  const dailyCost = yearlyTotal / 365;
+  // 할부 대상 금액
+  const maxLoanAmount = taxableVehiclePrice;
+
+  const loanPrincipal = Math.max(
+    0,
+    Math.min(
+      maxLoanAmount,
+      taxableVehiclePrice - downPayment
+    )
+  );
+
+  // 월 할부 금리
+  const monthlyLoanRate = loanRate / 100 / 12;
+
+  // 월 할부금
+  let monthlyPayment = 0;
+
+  if (loanPrincipal > 0 && loanMonths > 0) {
+    if (monthlyLoanRate > 0) {
+      monthlyPayment =
+        (loanPrincipal *
+          monthlyLoanRate *
+          Math.pow(
+            1 + monthlyLoanRate,
+            loanMonths
+          )) /
+        (Math.pow(
+          1 + monthlyLoanRate,
+          loanMonths
+        ) - 1);
+    } else {
+      monthlyPayment =
+        loanPrincipal / loanMonths;
+    }
+  }
+
+  // 총 할부 상환액
+  const totalLoanPayment =
+    monthlyPayment * loanMonths;
+
+  // 총 할부 이자
+  const totalLoanInterest = Math.max(
+    0,
+    totalLoanPayment - loanPrincipal
+  );
+
+  // 실제 초기 현금
+  const initialCashNeeded =
+    totalPurchaseCost - loanPrincipal;
+
+  const costItems = [
+    {
+      label: "차량 가격",
+      amount: vehiclePrice,
+    },
+    {
+      label: "옵션/추가 장비",
+      amount: options,
+    },
+    {
+      label: "취득세",
+      amount: acquisitionTax,
+    },
+    {
+      label: "등록·기타 비용",
+      amount: registrationFee,
+    },
+    {
+      label: "탁송·배송비",
+      amount: deliveryFee,
+    },
+    {
+      label: "첫해 자동차보험",
+      amount: insurance,
+    },
+  ];
+
+  const largestCostItem = costItems.reduce(
+    (largest, item) =>
+      item.amount > largest.amount
+        ? item
+        : largest,
+    costItems[0]
+  );
+
+  const getPercentage = (amount: number) => {
+    if (totalPurchaseCost === 0) {
+      return 0;
+    }
+
+    return Math.round(
+      (amount / totalPurchaseCost) * 100
+    );
+  };
 
   const updateValue = (
     key: keyof typeof values,
@@ -54,7 +157,9 @@ export default function CarCostPage() {
     allowDecimal = false
   ) => {
     const filteredValue = allowDecimal
-      ? value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1")
+      ? value
+          .replace(/[^0-9.]/g, "")
+          .replace(/(\..*)\./g, "$1")
       : value.replace(/[^0-9]/g, "");
 
     setValues((prev) => ({
@@ -63,486 +168,499 @@ export default function CarCostPage() {
     }));
   };
 
+  const fillExampleValues = () => {
+    setValues({
+      vehiclePrice: "35000000",
+      options: "3000000",
+      acquisitionTaxRate: "7",
+      registrationFee: "500000",
+      deliveryFee: "300000",
+      insurance: "1200000",
+      downPayment: "10000000",
+      loanRate: "5",
+      loanMonths: "60",
+    });
+  };
+
   const resetValues = () => {
     setValues(initialValues);
   };
 
-  const fillExampleValues = () => {
-    setValues({
-      distance: "1000",
-      efficiency: "12",
-      fuelPrice: "1700",
-      insurance: "1000000",
-      tax: "300000",
-      parking: "100000",
-      toll: "50000",
-      maintenance: "100000",
-    });
-  };
-
   const formatWon = (value: number) =>
     new Intl.NumberFormat("ko-KR", {
-      maximumFractionDigits: 2,
-    }).format(value);
+      maximumFractionDigits: 0,
+    }).format(Math.round(value));
 
-const costItems = [
-  {
-    label: "연료비",
-    amount: monthlyFuelCost,
-  },
-  {
-    label: "보험료",
-    amount: monthlyInsurance,
-  },
-  {
-    label: "자동차세",
-    amount: monthlyTax,
-  },
-  {
-    label: "주차비",
-    amount: parking,
-  },
-  {
-    label: "통행료",
-    amount: toll,
-  },
-  {
-    label: "정비비",
-    amount: maintenance,
-  },
-];
+  const resultReady =
+    vehiclePrice > 0 ||
+    options > 0 ||
+    registrationFee > 0 ||
+    deliveryFee > 0 ||
+    insurance > 0;
 
-const largestCostItem = costItems.reduce(
-  (largest, item) =>
-    item.amount > largest.amount ? item : largest,
-  costItems[0]
-);
-
-const largestCostPercentage =
-  monthlyTotal > 0
-    ? Math.round(
-        (largestCostItem.amount / monthlyTotal) * 1000
-      ) / 10
-    : 0;
-
-return (
-  <CalculatorLayout
-    title="🚗 자동차 유지비 계산기"
-    description="내 차에 한 달에 얼마나 들어가는지 계산해보세요."
-    headerTitle="자동차 유지비 계산기"
-  >
-    {/* 입력 */}
-    <div className="rounded-2xl bg-white p-6 shadow-md">
-      <h2 className="text-xl font-semibold text-gray-900">
-        기본 주행 정보
-      </h2>
-
-      <p className="mt-1 mb-5 text-sm text-gray-500">
-        자동차의 기본적인 주행 정보를 입력해주세요.
-      </p>
-
-      <div className="space-y-4">
-        <InputRow
-          label="월 주행거리"
-          value={values.distance}
-          unit="km"
-          allowDecimal
-          onChange={(value) =>
-            updateValue("distance", value, true)
-          }
-        />
-
-        <InputRow
-          label="연비"
-          value={values.efficiency}
-          unit="km/L"
-          allowDecimal
-          onChange={(value) =>
-            updateValue("efficiency", value, true)
-          }
-        />
-
-        <InputRow
-          label="연료 가격"
-          value={values.fuelPrice}
-          unit="원/L"
-          onChange={(value) =>
-            updateValue("fuelPrice", value)
-          }
-        />
-      </div>
-
-      <div className="my-6 h-px bg-gray-200" />
-
-      <h2 className="text-xl font-semibold text-gray-900">
-        기타 유지비
-      </h2>
-
-      <p className="mt-1 mb-5 text-sm text-gray-500">
-        알고 있는 비용만 입력해도 계산할 수 있어요.
-      </p>
-
-      <div className="space-y-4">
-        <InputRow
-          label="연간 보험료"
-          value={values.insurance}
-          unit="원"
-          onChange={(value) =>
-            updateValue("insurance", value)
-          }
-        />
-
-        <InputRow
-          label="연간 자동차세"
-          value={values.tax}
-          unit="원"
-          onChange={(value) =>
-            updateValue("tax", value)
-          }
-        />
-
-        <InputRow
-          label="월 주차비"
-          value={values.parking}
-          unit="원"
-          onChange={(value) =>
-            updateValue("parking", value)
-          }
-        />
-
-        <InputRow
-          label="월 통행료"
-          value={values.toll}
-          unit="원"
-          onChange={(value) =>
-            updateValue("toll", value)
-          }
-        />
-
-        <InputRow
-          label="월 정비비"
-          value={values.maintenance}
-          unit="원"
-          onChange={(value) =>
-            updateValue("maintenance", value)
-          }
-        />
-      </div>
-
-      <p className="mt-3 text-center text-sm text-gray-500">
-        입력할 값이 없다면 예시 값을 먼저 넣어볼 수 있어요.
-      </p>
-
-      <button
-        onClick={fillExampleValues}
-        className="mt-3 w-full rounded-lg bg-gray-900 py-3 text-sm font-medium text-white transition hover:bg-gray-700"
-      >
-        예시 금액 넣어보기
-      </button>
-
-      <button
-        onClick={resetValues}
-        className="mt-3 w-full rounded-lg border border-gray-300 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-100"
-      >
-        입력값 초기화
-      </button>
-    </div>
-
-    {/* 결과 */}
-    {monthlyTotal === 0 && (
-      <div className="mt-6 rounded-2xl bg-white p-6 text-center shadow-md">
-        <p className="text-2xl">🚗</p>
-
-        <h2 className="mt-3 text-lg font-semibold text-gray-900">
-          내 자동차 유지비는 얼마일까?
+  return (
+    <CalculatorLayout
+      title="🚘 자동차 구매비용 계산기"
+      description="차량 가격과 취득세, 옵션, 보험료, 할부 조건 등을 입력해 자동차 구매에 필요한 비용을 계산해보세요."
+      headerTitle="자동차 구매비용"
+    >
+      {/* 입력 */}
+      <div className="rounded-2xl bg-white p-6 shadow-md">
+        <h2 className="text-xl font-semibold text-gray-900">
+          자동차 구매 조건 입력
         </h2>
 
-        <p className="mt-2 text-sm leading-6 text-gray-500">
-          위의 자동차 정보를 입력하면
-          <br />
-          예상 월 유지비를 계산해드려요.
+        <p className="mt-1 mb-5 text-sm text-gray-500">
+          차량 가격과 구매에 필요한 비용, 할부 조건을 입력해주세요.
         </p>
-      </div>
-    )}
 
-    {monthlyTotal > 0 && (
-      <>
-        <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-          <p className="text-sm text-gray-300">
-            예상 월 자동차 유지비
-          </p>
+        <div className="space-y-4">
+          <InputRow
+            label="차량 가격"
+            value={values.vehiclePrice}
+            unit="원"
+            onChange={(value) =>
+              updateValue("vehiclePrice", value)
+            }
+          />
 
-          <p className="mt-2 text-4xl font-bold">
-            {formatWon(monthlyTotal)}원
-          </p>
+          <InputRow
+            label="옵션/추가 장비"
+            value={values.options}
+            unit="원"
+            onChange={(value) =>
+              updateValue("options", value)
+            }
+          />
 
-          <p className="mt-2 text-xs text-gray-400">
-            한 달 동안 예상되는 자동차 유지비예요.
-          </p>
+          <div className="my-6 h-px bg-gray-200" />
 
-          <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+          <h3 className="text-base font-semibold text-gray-900">
+            세금·부대비용
+          </h3>
 
-          <p className="text-sm text-gray-300">
-            1년 예상 자동차 유지비
-          </p>
+          <InputRow
+            label="취득세율"
+            value={values.acquisitionTaxRate}
+            unit="%"
+            allowDecimal
+            onChange={(value) =>
+              updateValue(
+                "acquisitionTaxRate",
+                value,
+                true
+              )
+            }
+          />
 
-          <p className="mt-2 text-2xl font-semibold">
-            {formatWon(yearlyTotal)}원
-          </p>
+          <InputRow
+            label="등록·기타 비용"
+            value={values.registrationFee}
+            unit="원"
+            onChange={(value) =>
+              updateValue(
+                "registrationFee",
+                value
+              )
+            }
+          />
 
-          <p className="mt-2 text-xs text-gray-400">
-            월 유지비 × 12개월
-          </p>
+          <InputRow
+            label="탁송·배송비"
+            value={values.deliveryFee}
+            unit="원"
+            onChange={(value) =>
+              updateValue(
+                "deliveryFee",
+                value
+              )
+            }
+          />
 
-          <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+          <InputRow
+            label="첫해 보험료"
+            value={values.insurance}
+            unit="원"
+            onChange={(value) =>
+              updateValue(
+                "insurance",
+                value
+              )
+            }
+          />
 
-          <p className="text-sm text-gray-300">
-            하루 평균 비용
-          </p>
+          <div className="my-6 h-px bg-gray-200" />
 
-          <p className="mt-2 text-2xl font-semibold">
-            {formatWon(dailyCost)}원
-          </p>
+          <h3 className="text-base font-semibold text-gray-900">
+            할부 조건
+          </h3>
 
-          <p className="mt-2 text-xs text-gray-400">
-            연간 유지비 ÷ 365일
-          </p>
+          <InputRow
+            label="선수금"
+            value={values.downPayment}
+            unit="원"
+            onChange={(value) =>
+              updateValue(
+                "downPayment",
+                value
+              )
+            }
+          />
+
+          <InputRow
+            label="할부 금리"
+            value={values.loanRate}
+            unit="%"
+            allowDecimal
+            onChange={(value) =>
+              updateValue(
+                "loanRate",
+                value,
+                true
+              )
+            }
+          />
+
+          <InputRow
+            label="할부 기간"
+            value={values.loanMonths}
+            unit="개월"
+            onChange={(value) =>
+              updateValue(
+                "loanMonths",
+                value
+              )
+            }
+          />
         </div>
 
-        {/* 비용 분석 */}
-        <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
-          <h2 className="text-xl font-semibold text-gray-900">
-            ⛽ 비용 분석
+        <p className="mt-3 text-center text-sm text-gray-500">
+          입력할 값이 없다면 예시 값을 먼저 넣어볼 수 있어요.
+        </p>
+
+        <button
+          onClick={fillExampleValues}
+          className="mt-3 w-full rounded-lg bg-gray-900 py-3 text-sm font-medium text-white transition hover:bg-gray-700"
+        >
+          예시 금액 넣어보기
+        </button>
+
+        <button
+          onClick={resetValues}
+          className="mt-3 w-full rounded-lg border border-gray-300 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-100"
+        >
+          입력값 초기화
+        </button>
+      </div>
+
+      {/* 입력 전 */}
+      {!resultReady && (
+        <div className="mt-6 rounded-2xl bg-white p-6 text-center shadow-md">
+          <p className="text-2xl">🚘</p>
+
+          <h2 className="mt-3 text-lg font-semibold text-gray-900">
+            자동차를 구매하려면 얼마가 필요할까?
           </h2>
 
-          <div className="mt-5 rounded-xl bg-gray-50 p-5">
-            <p className="text-sm text-gray-500">
-              가장 큰 지출
-            </p>
-
-            <p className="mt-1 text-xl font-semibold text-gray-900">
-              {largestCostItem.label}
-            </p>
-
-            <p className="mt-1 text-sm text-gray-600">
-              {new Intl.NumberFormat("ko-KR").format(
-                Math.round(largestCostItem.amount)
-              )}
-              원 · 전체의 {largestCostPercentage}%
-            </p>
-          </div>
-
-          <div className="mt-4 space-y-4">
-            <CostRow
-              label="연료비"
-              amount={monthlyFuelCost}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="보험료"
-              amount={monthlyInsurance}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="자동차세"
-              amount={monthlyTax}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="주차비"
-              amount={parking}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="통행료"
-              amount={toll}
-              total={monthlyTotal}
-            />
-
-            <CostRow
-              label="정비비"
-              amount={maintenance}
-              total={monthlyTotal}
-            />
-          </div>
+          <p className="mt-2 text-sm leading-6 text-gray-500">
+            차량 가격과 세금, 부대비용, 할부 조건을 입력하면
+            <br />
+            자동차 구매에 필요한 예상 비용을 계산해드려요.
+          </p>
         </div>
-      </>
-    )}
+      )}
 
-    {/* SEO 설명 콘텐츠 */}
-    <section className="mt-6 space-y-3">
-      <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
-          자동차 유지비 계산기란?
-        </summary>
+      {/* 결과 */}
+      {resultReady && (
+        <>
+          <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
+            <p className="text-sm text-gray-300">
+              자동차 구매 예상 비용
+            </p>
 
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <p className="mt-3 text-4xl font-bold">
+              {formatWon(totalPurchaseCost)}원
+            </p>
+
+            <p className="mt-2 text-xs text-gray-400">
+              차량 가격 + 취득세 + 부대비용 + 첫해 보험료
+            </p>
+
+            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+
+            <p className="text-sm text-gray-300">
+              실제 필요한 초기 현금
+            </p>
+
+            <p className="mt-2 text-2xl font-bold">
+              {formatWon(initialCashNeeded)}원
+            </p>
+
+            <p className="mt-2 text-xs text-gray-400">
+              총 구매비용에서 할부 원금을 제외한 금액
+            </p>
+
+            {monthlyPayment > 0 && (
+              <>
+                <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+
+                <p className="text-sm text-gray-300">
+                  월 예상 할부금
+                </p>
+
+                <p className="mt-2 text-2xl font-bold">
+                  {formatWon(monthlyPayment)}원
+                </p>
+
+                <p className="mt-2 text-xs text-gray-400">
+                  {loanMonths}개월 · 연 {loanRate}% 기준
+                </p>
+              </>
+            )}
+          </div>
+
+          {/* 비용 분석 */}
+          <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
+            <h2 className="text-xl font-semibold text-gray-900">
+              📊 자동차 구매비용 분석
+            </h2>
+
+            {/* 가장 큰 비용 */}
+            <div className="mt-5 rounded-xl bg-gray-50 p-4">
+              <p className="text-sm text-gray-500">
+                가장 큰 비용 항목
+              </p>
+
+              <p className="mt-1 text-lg font-semibold text-gray-900">
+                {largestCostItem.label}
+              </p>
+
+              <p className="mt-1 text-sm text-gray-600">
+                {formatWon(largestCostItem.amount)}원 · 전체의{" "}
+                {getPercentage(largestCostItem.amount)}%
+              </p>
+            </div>
+
+            {/* 취득세 */}
+            <div className="mt-4 rounded-xl border border-gray-200 p-4">
+              <p className="text-sm text-gray-500">
+                예상 취득세
+              </p>
+
+              <p className="mt-1 text-lg font-semibold text-gray-900">
+                {formatWon(acquisitionTax)}원
+              </p>
+
+              <p className="mt-1 text-sm text-gray-600">
+                차량 가격 + 옵션 × {acquisitionTaxRate}%
+              </p>
+            </div>
+
+            {/* 할부 */}
+            {loanPrincipal > 0 && (
+              <div className="mt-4 rounded-xl border border-gray-200 p-4">
+                <p className="text-sm text-gray-500">
+                  예상 총 할부 이자
+                </p>
+
+                <p className="mt-1 text-lg font-semibold text-gray-900">
+                  {formatWon(totalLoanInterest)}원
+                </p>
+
+                <p className="mt-1 text-sm text-gray-600">
+                  할부 원금 {formatWon(loanPrincipal)}원 기준
+                </p>
+              </div>
+            )}
+
+            {/* 항목별 비용 */}
+            <div className="mt-6 space-y-5">
+              {costItems.map((item) => (
+                <div key={item.label}>
+                  <div className="flex justify-between gap-4 text-sm">
+                    <span className="font-medium text-gray-700">
+                      {item.label}
+                    </span>
+
+                    <span className="shrink-0 text-gray-500">
+                      {formatWon(item.amount)}원
+                    </span>
+                  </div>
+
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-gray-800"
+                      style={{
+                        width: `${Math.min(
+                          getPercentage(item.amount),
+                          100
+                        )}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-5 text-xs leading-5 text-gray-400">
+              ※ 계산 결과는 입력한 차량 가격과 비용을 기준으로 한
+              예상값입니다. 실제 세금과 금융상품의 조건은 차량 종류,
+              지역, 금융사 등에 따라 달라질 수 있습니다.
+            </p>
+          </div>
+        </>
+      )}
+
+      {/* SEO 콘텐츠 */}
+      <section className="mt-6 space-y-3">
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer list-none px-6 py-5 text-lg font-semibold text-gray-900">
+            🚘 자동차 구매비용 계산기란?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
-            자동차를 보유하면 연료비뿐만 아니라 자동차 보험료,
-            자동차세, 주차비, 통행료, 정비비 등 다양한 유지비가
-            발생합니다.
+            자동차를 구매할 때 차량 가격만 생각하기보다
+            취득세, 등록비, 탁송비, 보험료 등 다양한 비용을
+            함께 고려해야 합니다.
           </p>
 
           <p className="mt-3 text-sm leading-7 text-gray-600">
-            자동차 유지비 계산기는 월 주행거리와 연비, 연료 가격을
-            입력하고 보험료와 자동차세 등의 비용을 함께 반영해서
-            예상 월 유지비와 연간 유지비를 계산해볼 수 있는
-            계산기입니다.
+            이 계산기는 차량 가격과 옵션, 세금 및 부대비용을
+            입력해 자동차 구매에 필요한 예상 비용을
+            계산할 수 있도록 도와줍니다.
           </p>
 
           <p className="mt-3 text-sm leading-7 text-gray-600">
-            계산 결과에서는 하루 평균 비용도 함께 확인할 수 있어
-            자동차를 운행하면서 필요한 비용을 보다 쉽게 파악할 수
-            있습니다.
+            할부를 이용하는 경우에는 선수금과 금리, 할부기간을
+            입력해 월 예상 할부금과 총 이자도 함께 확인할 수 있습니다.
           </p>
-        </div>
-      </details>
+          </div>
+        </details>
 
-      <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
-          자동차 유지비 계산 방법
-        </summary>
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer list-none px-6 py-5 text-lg font-semibold text-gray-900">
+            자동차 구매비용은 어떻게 계산하나요?
+          </summary>
 
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
-            월 연료비는 월 주행거리를 연비로 나눈 뒤 연료 가격을
-            곱해서 계산합니다.
+            기본적인 자동차 구매비용은 차량 가격에 옵션과
+            취득세, 등록·기타 비용, 탁송·배송비,
+            첫해 보험료 등을 더해 계산합니다.
           </p>
 
           <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-            월 주행거리 ÷ 연비 × 연료 가격
+            차량 가격 + 옵션
             <br />
-            = 월 연료비
+            + 취득세 + 등록·기타 비용
+            <br />
+            + 탁송·배송비 + 첫해 보험료
+            <br />
+            = 자동차 구매 예상 비용
           </div>
 
           <p className="mt-4 text-sm leading-7 text-gray-600">
-            연간 보험료와 자동차세는 각각 12개월로 나누어 월
-            유지비에 반영합니다.
+            할부를 이용한다면 차량 가격과 옵션에서 선수금을
+            제외한 금액을 할부 원금으로 계산합니다.
           </p>
 
           <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-            연간 보험료 ÷ 12
+            차량 가격 + 옵션 - 선수금
             <br />
-            = 월 보험료
-            <br />
-            <br />
-            연간 자동차세 ÷ 12
-            <br />
-            = 월 자동차세
+            = 예상 할부 원금
           </div>
-
-          <p className="mt-4 text-sm leading-7 text-gray-600">
-            최종 월 자동차 유지비는 월 연료비와 월 보험료,
-            월 자동차세, 주차비, 통행료, 정비비를 합산해서
-            계산합니다.
-          </p>
-
-          <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-            월 연료비 + 월 보험료 + 월 자동차세 + 월 주차비 + 월 통행료 + 월 정비비
-            <br />
-            = 예상 월 자동차 유지비
           </div>
+        </details>
 
-          <p className="mt-4 text-sm leading-7 text-gray-600">
-            연간 유지비는 월 유지비에 12개월을 곱하고, 하루 평균
-            비용은 연간 유지비를 365일로 나누어 계산합니다.
-          </p>
-        </div>
-      </details>
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer list-none px-6 py-5 text-lg font-semibold text-gray-900">
+            어떤 비용을 포함하나요?
+          </summary>
 
-      <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
-          어떤 비용을 입력할 수 있나요?
-        </summary>
-
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
-            자동차의 월 주행거리, 연비, 연료 가격을 입력할 수
-            있습니다.
+            차량 가격과 옵션, 취득세, 등록·기타 비용,
+            탁송·배송비, 첫해 자동차보험료를 입력할 수 있습니다.
           </p>
 
           <p className="mt-3 text-sm leading-7 text-gray-600">
-            그 외에도 연간 보험료와 자동차세, 월 주차비,
-            통행료, 정비비를 입력해서 자동차 유지비를 계산할 수
-            있습니다.
+            할부를 이용하는 경우 선수금, 할부 금리,
+            할부 기간을 입력해 예상 월 납입금과
+            총 할부 이자를 확인할 수 있습니다.
           </p>
 
           <p className="mt-3 text-sm leading-7 text-gray-600">
-            모든 항목을 알고 있지 않아도 계산할 수 있습니다.
-            알고 있는 비용만 입력하고 나머지는 0원으로 두면
-            입력한 비용을 기준으로 계산됩니다.
+            실제 차량 구매에는 개별 차량이나 계약 조건에 따라
+            추가 비용이 발생할 수 있으므로 최종 계약 전에는
+            실제 견적서를 확인하는 것이 좋습니다.
           </p>
-        </div>
-      </details>
+          </div>
+        </details>
 
-      <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
-          자주 묻는 질문
-        </summary>
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer list-none px-6 py-5 text-lg font-semibold text-gray-900">
+            자주 묻는 질문
+          </summary>
 
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-gray-900">
-                Q. 자동차 유지비에는 어떤 비용이 포함되나요?
+                Q. 차량 가격 외에 어떤 비용이 필요한가요?
               </h3>
+
               <p className="mt-2 text-sm leading-7 text-gray-600">
-                연료비, 자동차 보험료, 자동차세, 주차비, 통행료,
-                정비비를 입력해서 계산할 수 있습니다.
+                취득세, 등록·기타 비용, 탁송·배송비,
+                보험료 등이 추가로 발생할 수 있습니다.
+                이 계산기에서는 해당 항목을 직접 입력해
+                예상 구매비용에 반영할 수 있습니다.
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-gray-900">
-                Q. 연간 보험료와 자동차세는 어떻게 계산되나요?
+                Q. 할부를 이용하면 월 얼마를 내나요?
               </h3>
+
               <p className="mt-2 text-sm leading-7 text-gray-600">
-                입력한 연간 보험료와 자동차세를 각각 12개월로
-                나누어 월 유지비에 반영합니다.
+                차량 가격과 옵션에서 선수금을 제외한 금액을
+                할부 원금으로 계산하고, 입력한 금리와 기간을
+                기준으로 월 예상 할부금을 계산합니다.
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-gray-900">
-                Q. 연비에 소수점을 입력할 수 있나요?
+                Q. 취득세율은 직접 변경할 수 있나요?
               </h3>
+
               <p className="mt-2 text-sm leading-7 text-gray-600">
-                네. 연비와 월 주행거리는 소수점을 입력할 수
-                있습니다. 예를 들어 12.5km/L와 같은 값을
-                입력할 수 있습니다.
+                네. 차량이나 적용 조건에 따라 세율이 달라질 수
+                있으므로 취득세율을 직접 입력할 수 있도록
+                만들었습니다.
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-gray-900">
-                Q. 모든 비용을 입력해야 하나요?
+                Q. 자동차 유지비도 포함되나요?
               </h3>
-              <p className="mt-2 text-sm leading-7 text-gray-600">
-                아니요. 알고 있는 비용만 입력해도 됩니다.
-                입력하지 않은 항목은 0원으로 계산됩니다.
-              </p>
-            </div>
 
-            <div>
-              <h3 className="font-semibold text-gray-900">
-                Q. 자동차 할부금도 포함되나요?
-              </h3>
               <p className="mt-2 text-sm leading-7 text-gray-600">
-                현재 계산기에는 자동차 할부금 항목이 포함되어
-                있지 않습니다. 할부금이 있다면 기타 비용 등을
-                이용해 별도로 계산할 수 있습니다.
+                이 계산기는 자동차를 구매할 때 필요한
+                초기 비용을 계산하는 용도입니다.
+                매월 발생하는 연료비, 정비비, 자동차세 등의
+                유지비는 별도로 계산해야 합니다.
               </p>
             </div>
           </div>
-        </div>
-      </details>
-    </section>
-  </CalculatorLayout>
-);
+          </div>
+        </details>
+
+      </section>
+    </CalculatorLayout>
+  );
 }
 
 function formatInputValue(value: string) {
@@ -550,9 +668,9 @@ function formatInputValue(value: string) {
 
   const [integerPart, decimalPart] = value.split(".");
 
-  const formattedInteger = new Intl.NumberFormat("ko-KR").format(
-    Number(integerPart || 0)
-  );
+  const formattedInteger = new Intl.NumberFormat(
+    "ko-KR"
+  ).format(Number(integerPart || 0));
 
   if (value.includes(".")) {
     return `${formattedInteger}.${decimalPart ?? ""}`;
@@ -584,7 +702,9 @@ function InputRow({
 
       <input
         type="text"
-        inputMode={allowDecimal ? "decimal" : "numeric"}
+        inputMode={
+          allowDecimal ? "decimal" : "numeric"
+        }
         value={displayValue}
         onChange={(e) => onChange(e.target.value)}
         placeholder="0"
@@ -598,41 +718,3 @@ function InputRow({
   );
 }
 
-function CostRow({
-  label,
-  amount,
-  total,
-}: {
-  label: string;
-  amount: number;
-  total: number;
-}) {
-  const percentage =
-    total > 0
-      ? Math.round((amount / total) * 1000) / 10
-      : 0;
-
-  return (
-    <div>
-      <div className="flex justify-between text-sm">
-        <span className="font-medium text-gray-700">
-          {label}
-        </span>
-
-        <span className="text-gray-500">
-          {new Intl.NumberFormat("ko-KR").format(amount)}원 ·{" "}
-          {percentage}%
-        </span>
-      </div>
-
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-        <div
-          className="h-full rounded-full bg-gray-800"
-          style={{
-            width: `${Math.min(percentage, 100)}%`,
-          }}
-        />
-      </div>
-    </div>
-  );
-}

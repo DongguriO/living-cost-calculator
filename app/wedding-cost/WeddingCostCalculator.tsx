@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
 
 const initialValues = {
@@ -20,7 +20,6 @@ const initialValues = {
 
 export default function WeddingCostCalculator() {
   const [values, setValues] = useState(initialValues);
-  const [openSection, setOpenSection] = useState<string | null>(null);
 
   const venue = Number(values.venue || 0);
   const meal = Number(values.meal || 0);
@@ -408,12 +407,12 @@ export default function WeddingCostCalculator() {
 
       {/* SEO 콘텐츠 */}
       <section className="mt-6 space-y-3">
-        <SeoSection
-          title="💍 결혼/웨딩 비용 계산기란?"
-          sectionKey="about"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            💍 결혼/웨딩 비용 계산기란?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             결혼을 준비할 때는 예식장 비용뿐만 아니라
             식사비, 스드메, 사진·영상, 신혼여행 등
@@ -425,14 +424,15 @@ export default function WeddingCostCalculator() {
             항목별로 입력하고 전체 예산을 계산할 수 있도록
             도와줍니다.
           </p>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="결혼 비용은 어떻게 계산하나요?"
-          sectionKey="method"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            결혼 비용은 어떻게 계산하나요?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             식사비는 1인 식사비에 예상 하객 수를 곱해 계산합니다.
           </p>
@@ -447,14 +447,15 @@ export default function WeddingCostCalculator() {
             전체 비용은 예식장, 식사, 스드메, 신혼여행,
             예물 등 입력한 항목을 모두 더해 계산합니다.
           </p>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="어떤 비용을 포함하나요?"
-          sectionKey="costs"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            어떤 비용을 포함하나요?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             예식장 대관료, 식사비, 스튜디오, 드레스,
             메이크업, 사진·영상, 웨딩용품, 신혼여행,
@@ -466,14 +467,15 @@ export default function WeddingCostCalculator() {
             비용이 발생할 수 있으므로 필요한 항목은
             기타 비용에 포함해 계산해보세요.
           </p>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="자주 묻는 질문"
-          sectionKey="faq"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            자주 묻는 질문
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-gray-900">
@@ -507,7 +509,9 @@ export default function WeddingCostCalculator() {
               </p>
             </div>
           </div>
-        </SeoSection>
+          </div>
+        </details>
+
       </section>
     </CalculatorLayout>
   );
@@ -556,46 +560,3 @@ function InputRow({
   );
 }
 
-function SeoSection({
-  title,
-  sectionKey,
-  openSection,
-  setOpenSection,
-  children,
-}: {
-  title: string;
-  sectionKey: string;
-  openSection: string | null;
-  setOpenSection: (value: string | null) => void;
-  children: ReactNode;
-}) {
-  const isOpen = openSection === sectionKey;
-
-  return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-      <button
-        type="button"
-        onClick={() =>
-          setOpenSection(
-            isOpen ? null : sectionKey
-          )
-        }
-        className="flex w-full items-center justify-between px-6 py-5 text-left"
-      >
-        <h2 className="text-lg font-semibold text-gray-900">
-          {title}
-        </h2>
-
-        <span className="ml-4 text-2xl font-light text-gray-500">
-          {isOpen ? "−" : "+"}
-        </span>
-      </button>
-
-      {isOpen && (
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-}

@@ -25,8 +25,7 @@ const categories = [
 
 export default function MovingCostPage() {
   const [values, setValues] = useState(initialValues);
-  const [openSection, setOpenSection] = useState<string | null>(null);
-
+  
   const updateValue = (
     key: keyof typeof values,
     value: string
@@ -239,229 +238,160 @@ export default function MovingCostPage() {
       )}
       <div className="mt-8 space-y-3">
         {/* SEO 설명 콘텐츠 */}
-            <section className="mt-6 space-y-3">
-            {/* 이사 비용 계산기란? */}
-            <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-                <button
-                type="button"
-                onClick={() =>
-                    setOpenSection(
-                    openSection === "about" ? null : "about"
-                    )
-                }
-                className="flex w-full items-center justify-between px-6 py-5 text-left"
-                >
-                <h2 className="text-lg font-semibold text-gray-900">
-                    📦 이사 비용 계산기란?
-                </h2>
+        <section className="mt-6 space-y-3">
+          <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+            <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+              📦 이사 비용 계산기란?
+            </summary>
 
-                <span className="ml-4 text-2xl font-light text-gray-500">
-                    {openSection === "about" ? "−" : "+"}
-                </span>
-                </button>
+            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+              <p className="text-sm leading-7 text-gray-600">
+                이사 비용 계산기는 이사할 때 발생할 수 있는 다양한 비용을
+                한 번에 계산해볼 수 있는 계산기입니다.
+              </p>
 
-                {openSection === "about" && (
-                <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-                    <p className="text-sm leading-7 text-gray-600">
-                    이사 비용 계산기는 이사할 때 발생할 수 있는 다양한 비용을
-                    한 번에 계산해볼 수 있는 계산기입니다.
-                    </p>
+              <p className="mt-3 text-sm leading-7 text-gray-600">
+                이삿짐 운반비, 포장비, 사다리차 비용, 청소비,
+                폐기물 처리비, 부동산 중개보수, 기타 비용을 입력하면
+                예상되는 총 이사 비용을 확인할 수 있습니다.
+              </p>
 
-                    <p className="mt-3 text-sm leading-7 text-gray-600">
+              <p className="mt-3 text-sm leading-7 text-gray-600">
+                실제 이사 비용은 이사 거리, 짐의 양, 작업 조건,
+                계약 조건 등에 따라 달라질 수 있으므로 계산 결과는
+                이사 예산을 계획하기 위한 참고용으로 활용해보세요.
+              </p>
+            </div>
+          </details>
+
+          <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+            <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+              이사 비용 계산 방법
+            </summary>
+
+            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+              <p className="text-sm leading-7 text-gray-600">
+                예상 이사 비용은 입력한 각 비용 항목을 모두 더해서
+                계산합니다.
+              </p>
+
+              <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
+                이삿짐 운반비 + 포장비 + 사다리차 비용 + 청소비
+                <br />
+                + 폐기물 처리비 + 부동산 중개보수 + 기타 비용
+                <br />
+                = 예상 이사 비용
+              </div>
+
+              <p className="mt-4 text-sm leading-7 text-gray-600">
+                이 계산기에서는 예상하지 못한 추가 비용에 대비할 수
+                있도록 입력한 비용의 10%를 예비비로 계산합니다.
+              </p>
+
+              <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
+                예상 이사 비용 × 10%
+                <br />
+                = 예비비
+                <br />
+                <br />
+                예상 이사 비용 + 예비비
+                <br />
+                = 예비비 포함 예상 비용
+              </div>
+
+              <p className="mt-4 text-sm leading-7 text-gray-600">
+                예비비 10%는 이 계산기에서 사용하는 참고용 기준이며,
+                실제 이사에서 반드시 필요한 비용을 의미하지는 않습니다.
+              </p>
+            </div>
+          </details>
+
+          <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+            <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+              어떤 비용을 입력할 수 있나요?
+            </summary>
+
+            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+              <p className="text-sm leading-7 text-gray-600">
+                이사 비용 계산기에서는 이사 과정에서 발생할 수 있는
+                다양한 비용을 직접 입력할 수 있습니다.
+              </p>
+
+              <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-gray-600">
+                <li>이삿짐 운반비</li>
+                <li>포장비</li>
+                <li>사다리차 비용</li>
+                <li>청소비</li>
+                <li>폐기물 처리비</li>
+                <li>부동산 중개보수</li>
+                <li>기타 비용</li>
+              </ul>
+
+              <p className="mt-4 text-sm leading-7 text-gray-600">
+                실제로 발생하지 않는 비용은 입력하지 않아도 됩니다.
+                해당하지 않는 항목은 비워두거나 0원으로 입력하면 됩니다.
+              </p>
+            </div>
+          </details>
+
+          <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+            <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+              자주 묻는 질문
+            </summary>
+
+            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+              <div className="space-y-5">
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Q. 이사 비용에는 어떤 항목이 포함되나요?
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-7 text-gray-600">
                     이삿짐 운반비, 포장비, 사다리차 비용, 청소비,
-                    폐기물 처리비, 부동산 중개보수, 기타 비용을 입력하면
-                    예상되는 총 이사 비용을 확인할 수 있습니다.
-                    </p>
-
-                    <p className="mt-3 text-sm leading-7 text-gray-600">
-                    실제 이사 비용은 이사 거리, 짐의 양, 작업 조건,
-                    계약 조건 등에 따라 달라질 수 있으므로 계산 결과는
-                    이사 예산을 계획하기 위한 참고용으로 활용해보세요.
-                    </p>
+                    폐기물 처리비, 부동산 중개보수, 기타 비용을
+                    입력해서 계산할 수 있습니다.
+                  </p>
                 </div>
-                )}
-            </div>
 
-            {/* 이사 비용 계산 방법 */}
-            <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-                <button
-                type="button"
-                onClick={() =>
-                    setOpenSection(
-                    openSection === "method" ? null : "method"
-                    )
-                }
-                className="flex w-full items-center justify-between px-6 py-5 text-left"
-                >
-                <h2 className="text-lg font-semibold text-gray-900">
-                    이사 비용 계산 방법
-                </h2>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Q. 모든 항목을 입력해야 하나요?
+                  </h3>
 
-                <span className="ml-4 text-2xl font-light text-gray-500">
-                    {openSection === "method" ? "−" : "+"}
-                </span>
-                </button>
-
-                {openSection === "method" && (
-                <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-                    <p className="text-sm leading-7 text-gray-600">
-                    예상 이사 비용은 입력한 각 비용 항목을 모두 더해서
-                    계산합니다.
-                    </p>
-
-                    <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                    이삿짐 운반비 + 포장비 + 사다리차 비용 + 청소비
-                    <br />
-                    + 폐기물 처리비 + 부동산 중개보수 + 기타 비용
-                    <br />
-                    = 예상 이사 비용
-                    </div>
-
-                    <p className="mt-4 text-sm leading-7 text-gray-600">
-                    이 계산기에서는 예상하지 못한 추가 비용에 대비할 수
-                    있도록 입력한 비용의 10%를 예비비로 계산합니다.
-                    </p>
-
-                    <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                    예상 이사 비용 × 10%
-                    <br />
-                    = 예비비
-                    <br />
-                    <br />
-                    예상 이사 비용 + 예비비
-                    <br />
-                    = 예비비 포함 예상 비용
-                    </div>
-
-                    <p className="mt-4 text-sm leading-7 text-gray-600">
-                    예비비 10%는 이 계산기에서 사용하는 참고용 기준이며,
-                    실제 이사에서 반드시 필요한 비용을 의미하지는 않습니다.
-                    </p>
+                  <p className="mt-2 text-sm leading-7 text-gray-600">
+                    아닙니다. 실제로 발생하는 비용만 입력하면 됩니다.
+                    해당하지 않는 항목은 비워두거나 0원으로 입력할 수
+                    있습니다.
+                  </p>
                 </div>
-                )}
-            </div>
 
-            {/* 어떤 비용을 입력할 수 있나요? */}
-            <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-                <button
-                type="button"
-                onClick={() =>
-                    setOpenSection(
-                    openSection === "costs" ? null : "costs"
-                    )
-                }
-                className="flex w-full items-center justify-between px-6 py-5 text-left"
-                >
-                <h2 className="text-lg font-semibold text-gray-900">
-                    어떤 비용을 입력할 수 있나요?
-                </h2>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Q. 예비비 10%는 꼭 준비해야 하나요?
+                  </h3>
 
-                <span className="ml-4 text-2xl font-light text-gray-500">
-                    {openSection === "costs" ? "−" : "+"}
-                </span>
-                </button>
-
-                {openSection === "costs" && (
-                <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-                    <p className="text-sm leading-7 text-gray-600">
-                    이사 비용 계산기에서는 이사 과정에서 발생할 수 있는
-                    다양한 비용을 직접 입력할 수 있습니다.
-                    </p>
-
-                    <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-gray-600">
-                    <li>이삿짐 운반비</li>
-                    <li>포장비</li>
-                    <li>사다리차 비용</li>
-                    <li>청소비</li>
-                    <li>폐기물 처리비</li>
-                    <li>부동산 중개보수</li>
-                    <li>기타 비용</li>
-                    </ul>
-
-                    <p className="mt-4 text-sm leading-7 text-gray-600">
-                    실제로 발생하지 않는 비용은 입력하지 않아도 됩니다.
-                    해당하지 않는 항목은 비워두거나 0원으로 입력하면
-                    됩니다.
-                    </p>
+                  <p className="mt-2 text-sm leading-7 text-gray-600">
+                    꼭 필요한 비용이라는 의미는 아닙니다. 이 계산기에서는
+                    예상하지 못한 추가 비용을 고려하기 위한 참고용으로
+                    입력한 비용의 10%를 예비비로 계산합니다.
+                  </p>
                 </div>
-                )}
-            </div>
 
-            {/* 자주 묻는 질문 */}
-            <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-                <button
-                type="button"
-                onClick={() =>
-                    setOpenSection(
-                    openSection === "faq" ? null : "faq"
-                    )
-                }
-                className="flex w-full items-center justify-between px-6 py-5 text-left"
-                >
-                <h2 className="text-lg font-semibold text-gray-900">
-                    자주 묻는 질문
-                </h2>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Q. 부동산 중개보수는 항상 발생하나요?
+                  </h3>
 
-                <span className="ml-4 text-2xl font-light text-gray-500">
-                    {openSection === "faq" ? "−" : "+"}
-                </span>
-                </button>
-
-                {openSection === "faq" && (
-                <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-                    <div className="space-y-5">
-                    <div>
-                        <h3 className="font-semibold text-gray-900">
-                        Q. 이사 비용에는 어떤 항목이 포함되나요?
-                        </h3>
-
-                        <p className="mt-2 text-sm leading-7 text-gray-600">
-                        이삿짐 운반비, 포장비, 사다리차 비용, 청소비,
-                        폐기물 처리비, 부동산 중개보수, 기타 비용을
-                        입력해서 계산할 수 있습니다.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h3 className="font-semibold text-gray-900">
-                        Q. 모든 항목을 입력해야 하나요?
-                        </h3>
-
-                        <p className="mt-2 text-sm leading-7 text-gray-600">
-                        아닙니다. 실제로 발생하는 비용만 입력하면 됩니다.
-                        해당하지 않는 항목은 비워두거나 0원으로 입력할 수
-                        있습니다.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h3 className="font-semibold text-gray-900">
-                        Q. 예비비 10%는 꼭 준비해야 하나요?
-                        </h3>
-
-                        <p className="mt-2 text-sm leading-7 text-gray-600">
-                        꼭 필요한 비용이라는 의미는 아닙니다. 이 계산기에서는
-                        예상하지 못한 추가 비용을 고려하기 위한 참고용으로
-                        입력한 비용의 10%를 예비비로 계산합니다.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h3 className="font-semibold text-gray-900">
-                        Q. 부동산 중개보수는 항상 발생하나요?
-                        </h3>
-
-                        <p className="mt-2 text-sm leading-7 text-gray-600">
-                        이사 방식이나 주거 형태에 따라 부동산 중개보수가
-                        발생하지 않을 수도 있습니다. 해당되는 경우에만
-                        예상 비용을 입력해서 계산하면 됩니다.
-                        </p>
-                    </div>
-                    </div>
+                  <p className="mt-2 text-sm leading-7 text-gray-600">
+                    이사 방식이나 주거 형태에 따라 부동산 중개보수가
+                    발생하지 않을 수도 있습니다. 해당되는 경우에만
+                    예상 비용을 입력해서 계산하면 됩니다.
+                  </p>
                 </div>
-                )}
+              </div>
             </div>
-            </section>
+          </details>
+        </section>
         </div>
     </CalculatorLayout>
   );

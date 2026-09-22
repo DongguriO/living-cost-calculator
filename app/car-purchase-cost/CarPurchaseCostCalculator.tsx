@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
 
 const initialValues = {
@@ -26,7 +26,6 @@ const categories = [
 
 export default function CarPurchaseCostCalculator() {
   const [values, setValues] = useState(initialValues);
-  const [openSection, setOpenSection] = useState<string | null>(null);
 
   const vehiclePrice = Number(values.vehiclePrice || 0);
   const options = Number(values.options || 0);
@@ -514,12 +513,12 @@ export default function CarPurchaseCostCalculator() {
 
       {/* SEO 콘텐츠 */}
       <section className="mt-6 space-y-3">
-        <SeoSection
-          title="🚘 자동차 구매비용 계산기란?"
-          sectionKey="about"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            🚘 자동차 구매비용 계산기란?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             자동차를 구매할 때 차량 가격만 생각하기보다
             취득세, 등록비, 탁송비, 보험료 등 다양한 비용을
@@ -536,14 +535,15 @@ export default function CarPurchaseCostCalculator() {
             할부를 이용하는 경우에는 선수금과 금리, 할부기간을
             입력해 월 예상 할부금과 총 이자도 함께 확인할 수 있습니다.
           </p>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="자동차 구매비용은 어떻게 계산하나요?"
-          sectionKey="method"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            자동차 구매비용은 어떻게 계산하나요?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             기본적인 자동차 구매비용은 차량 가격에 옵션과
             취득세, 등록·기타 비용, 탁송·배송비,
@@ -570,14 +570,15 @@ export default function CarPurchaseCostCalculator() {
             <br />
             = 예상 할부 원금
           </div>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="어떤 비용을 포함하나요?"
-          sectionKey="costs"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            어떤 비용을 포함하나요?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             차량 가격과 옵션, 취득세, 등록·기타 비용,
             탁송·배송비, 첫해 자동차보험료를 입력할 수 있습니다.
@@ -594,14 +595,15 @@ export default function CarPurchaseCostCalculator() {
             추가 비용이 발생할 수 있으므로 최종 계약 전에는
             실제 견적서를 확인하는 것이 좋습니다.
           </p>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="자주 묻는 질문"
-          sectionKey="faq"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            자주 묻는 질문
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-gray-900">
@@ -653,7 +655,9 @@ export default function CarPurchaseCostCalculator() {
               </p>
             </div>
           </div>
-        </SeoSection>
+          </div>
+        </details>
+
       </section>
     </CalculatorLayout>
   );
@@ -714,46 +718,3 @@ function InputRow({
   );
 }
 
-function SeoSection({
-  title,
-  sectionKey,
-  openSection,
-  setOpenSection,
-  children,
-}: {
-  title: string;
-  sectionKey: string;
-  openSection: string | null;
-  setOpenSection: (value: string | null) => void;
-  children: ReactNode;
-}) {
-  const isOpen = openSection === sectionKey;
-
-  return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-      <button
-        type="button"
-        onClick={() =>
-          setOpenSection(
-            isOpen ? null : sectionKey
-          )
-        }
-        className="flex w-full items-center justify-between px-6 py-5 text-left"
-      >
-        <h2 className="text-lg font-semibold text-gray-900">
-          {title}
-        </h2>
-
-        <span className="ml-4 text-2xl font-light text-gray-500">
-          {isOpen ? "−" : "+"}
-        </span>
-      </button>
-
-      {isOpen && (
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-}

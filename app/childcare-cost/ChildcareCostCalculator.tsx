@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
 
 const initialValues = {
@@ -20,7 +20,6 @@ const initialValues = {
 
 export default function ChildcareCostCalculator() {
   const [values, setValues] = useState(initialValues);
-  const [openSection, setOpenSection] = useState<string | null>(null);
 
   const delivery = Number(values.delivery || 0);
   const hospital = Number(values.hospital || 0);
@@ -474,12 +473,12 @@ export default function ChildcareCostCalculator() {
 
       {/* SEO 콘텐츠 */}
       <section className="mt-6 space-y-3">
-        <SeoSection
-          title="👶 출산·육아 비용 계산기란?"
-          sectionKey="about"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            👶 출산·육아 비용 계산기란?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             출산을 준비할 때는 병원비와 산후조리 비용,
             육아용품 등 초기 비용이 발생할 수 있습니다.
@@ -495,14 +494,15 @@ export default function ChildcareCostCalculator() {
             이 계산기는 초기 비용과 월별 비용을 입력해
             설정한 기간 동안 필요한 예상 비용을 계산합니다.
           </p>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="출산·육아 비용은 어떻게 계산하나요?"
-          sectionKey="method"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            출산·육아 비용은 어떻게 계산하나요?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             먼저 출산과 관련된 초기 비용을 합산합니다.
           </p>
@@ -533,14 +533,15 @@ export default function ChildcareCostCalculator() {
             초기 비용과 기간 동안의 육아비용을 합산해
             전체 예상 비용을 계산합니다.
           </p>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="어떤 비용을 포함하나요?"
-          sectionKey="costs"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            어떤 비용을 포함하나요?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <p className="text-sm leading-7 text-gray-600">
             초기 비용으로 출산 관련 비용, 병원·진료비,
             산후조리 비용, 육아용품을 입력할 수 있습니다.
@@ -557,14 +558,15 @@ export default function ChildcareCostCalculator() {
             해당하지 않는 비용은 기타 생활비에 포함해
             계산할 수 있습니다.
           </p>
-        </SeoSection>
+          </div>
+        </details>
 
-        <SeoSection
-          title="자주 묻는 질문"
-          sectionKey="faq"
-          openSection={openSection}
-          setOpenSection={setOpenSection}
-        >
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            자주 묻는 질문
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-gray-900">
@@ -614,7 +616,9 @@ export default function ChildcareCostCalculator() {
               </p>
             </div>
           </div>
-        </SeoSection>
+          </div>
+        </details>
+
       </section>
     </CalculatorLayout>
   );
@@ -663,46 +667,3 @@ function InputRow({
   );
 }
 
-function SeoSection({
-  title,
-  sectionKey,
-  openSection,
-  setOpenSection,
-  children,
-}: {
-  title: string;
-  sectionKey: string;
-  openSection: string | null;
-  setOpenSection: (value: string | null) => void;
-  children: ReactNode;
-}) {
-  const isOpen = openSection === sectionKey;
-
-  return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-      <button
-        type="button"
-        onClick={() =>
-          setOpenSection(
-            isOpen ? null : sectionKey
-          )
-        }
-        className="flex w-full items-center justify-between px-6 py-5 text-left"
-      >
-        <h2 className="text-lg font-semibold text-gray-900">
-          {title}
-        </h2>
-
-        <span className="ml-4 text-2xl font-light text-gray-500">
-          {isOpen ? "−" : "+"}
-        </span>
-      </button>
-
-      {isOpen && (
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-}
