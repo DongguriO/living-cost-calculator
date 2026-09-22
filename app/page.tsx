@@ -160,8 +160,8 @@ export default function Home() {
           머니머니는 생활에 필요한 다양한 비용을 쉽게 계산할 수 있도록 도와드립니다.
         </p>
       </div>
-
-      {/* <Footer /> */}
+      
+      <Footer />
     </main>
   );
 }
