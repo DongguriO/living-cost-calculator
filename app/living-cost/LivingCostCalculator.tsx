@@ -28,7 +28,6 @@ const categories = [
 
 export default function Home() {
   const [values, setValues] = useState(initialValues);
-  const [openSection, setOpenSection] = useState<string | null>(null);
 
   const income = Number(values.income || 0);
 
@@ -394,222 +393,142 @@ export default function Home() {
 
       {/* SEO 설명 콘텐츠 */}
       <section className="mt-6 space-y-3">
-        {/* 자취 생활비 계산기란? */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <button
-            type="button"
-            onClick={() =>
-              setOpenSection(
-                openSection === "about" ? null : "about"
-              )
-            }
-            className="flex w-full items-center justify-between px-6 py-5 text-left"
-          >
-            <h2 className="text-lg font-semibold text-gray-900">
-              자취 생활비 계산기란?
-            </h2>
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            자취 생활비 계산기란?
+          </summary>
 
-            <span className="ml-4 text-2xl font-light text-gray-500">
-              {openSection === "about" ? "−" : "+"}
-            </span>
-          </button>
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <p className="text-sm leading-7 text-gray-600">
+              자취를 시작하면 월세뿐만 아니라 관리비, 전기요금, 가스요금,
+              통신비, 식비, 교통비 등 다양한 생활비가 발생합니다.
+            </p>
 
-          {openSection === "about" && (
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-              <p className="text-sm leading-7 text-gray-600">
-                자취를 시작하면 월세뿐만 아니라 관리비, 전기요금,
-                가스요금, 통신비, 식비, 교통비 등 다양한 생활비가
-                발생합니다.
-              </p>
+            <p className="mt-3 text-sm leading-7 text-gray-600">
+              자취 생활비 계산기는 매달 발생하는 지출을 직접 입력해서 예상 월
+              생활비와 연간 생활비를 계산해볼 수 있는 계산기입니다.
+            </p>
 
-              <p className="mt-3 text-sm leading-7 text-gray-600">
-                자취 생활비 계산기는 매달 발생하는 지출을 직접 입력해서
-                예상 월 생활비와 연간 생활비를 계산해볼 수 있는
-                계산기입니다.
-              </p>
+            <p className="mt-3 text-sm leading-7 text-gray-600">
+              월 수입을 함께 입력하면 생활비를 제외하고 매달 얼마가 남는지와
+              저축률도 함께 확인할 수 있습니다.
+            </p>
+          </div>
+        </details>
 
-              <p className="mt-3 text-sm leading-7 text-gray-600">
-                월 수입을 함께 입력하면 생활비를 제외하고 매달 얼마가
-                남는지와 저축률도 함께 확인할 수 있습니다.
-              </p>
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            자취 생활비 계산 방법
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <p className="text-sm leading-7 text-gray-600">
+              예상 월 생활비는 입력한 월 지출 항목을 모두 더해서 계산합니다.
+            </p>
+
+            <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
+              월세 + 관리비 + 전기요금 + 가스요금 + 통신비 + 식비 + 교통비 + 기타 비용
+              <br />
+              = 예상 월 생활비
             </div>
-          )}
-        </div>
 
-        {/* 자취 생활비 계산 방법 */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <button
-            type="button"
-            onClick={() =>
-              setOpenSection(
-                openSection === "method" ? null : "method"
-              )
-            }
-            className="flex w-full items-center justify-between px-6 py-5 text-left"
-          >
-            <h2 className="text-lg font-semibold text-gray-900">
-              자취 생활비 계산 방법
-            </h2>
+            <p className="mt-4 text-sm leading-7 text-gray-600">
+              예상 연간 생활비는 예상 월 생활비에 12개월을 곱해서 계산합니다.
+            </p>
 
-            <span className="ml-4 text-2xl font-light text-gray-500">
-              {openSection === "method" ? "−" : "+"}
-            </span>
-          </button>
+            <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
+              예상 월 생활비 × 12
+              <br />
+              = 예상 연간 생활비
+            </div>
 
-          {openSection === "method" && (
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-              <p className="text-sm leading-7 text-gray-600">
-                예상 월 생활비는 입력한 월 지출 항목을 모두 더해서
-                계산합니다.
-              </p>
+            <p className="mt-4 text-sm leading-7 text-gray-600">
+              월 수입을 입력하면 월 수입에서 생활비를 제외하고 남는 금액과
+              저축률도 확인할 수 있습니다.
+            </p>
 
-              <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                월세 + 관리비 + 전기요금 + 가스요금 + 통신비 + 식비 + 교통비 + 기타 비용
-                <br />
-                = 예상 월 생활비
+            <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
+              월 수입 - 예상 월 생활비
+              <br />
+              = 월 수입에서 남는 돈
+              <br />
+              <br />
+              (월 수입에서 남는 돈 ÷ 월 수입) × 100
+              <br />
+              = 저축률
+            </div>
+          </div>
+        </details>
+
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            어떤 비용을 입력할 수 있나요?
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <p className="text-sm leading-7 text-gray-600">
+              월세와 관리비 같은 주거비, 전기요금·가스요금·통신비 같은 공과금,
+              식비·교통비·기타 비용을 각각 입력할 수 있습니다.
+            </p>
+
+            <p className="mt-3 text-sm leading-7 text-gray-600">
+              본인의 실제 지출 금액을 입력하면 현재 생활 패턴에 맞는 월 생활비를
+              확인할 수 있습니다.
+            </p>
+          </div>
+        </details>
+
+        <details className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+            자주 묻는 질문
+          </summary>
+
+          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+            <div className="space-y-5">
+              <div>
+                <h3 className="font-semibold text-gray-900">
+                  Q. 자취 생활비에는 어떤 비용이 포함되나요?
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-gray-600">
+                  월세, 관리비, 전기요금, 가스요금, 통신비, 식비, 교통비,
+                  기타 비용을 입력해서 계산할 수 있습니다.
+                </p>
               </div>
 
-              <p className="mt-4 text-sm leading-7 text-gray-600">
-                예상 연간 생활비는 예상 월 생활비에 12개월을 곱해서
-                계산합니다.
-              </p>
-
-              <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                예상 월 생활비 × 12
-                <br />
-                = 예상 연간 생활비
+              <div>
+                <h3 className="font-semibold text-gray-900">
+                  Q. 월세가 없어도 계산할 수 있나요?
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-gray-600">
+                  네. 사용하지 않는 항목은 0원으로 두고 필요한 비용만 입력하면
+                  됩니다.
+                </p>
               </div>
 
-              <p className="mt-4 text-sm leading-7 text-gray-600">
-                월 수입을 입력하면 월 수입에서 생활비를 제외하고
-                남는 금액과 저축률도 확인할 수 있습니다.
-              </p>
+              <div>
+                <h3 className="font-semibold text-gray-900">
+                  Q. 월 수입을 입력하지 않아도 되나요?
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-gray-600">
+                  네. 월 수입을 입력하지 않아도 예상 월 생활비와 연간 생활비를
+                  계산할 수 있습니다. 다만 월 수입에서 남는 돈과 저축률을
+                  확인하려면 월 수입을 입력해야 합니다.
+                </p>
+              </div>
 
-              <div className="mt-4 rounded-xl bg-gray-100 p-4 text-sm leading-7 text-gray-700">
-                월 수입 - 예상 월 생활비
-                <br />
-                = 월 수입에서 남는 돈
-                <br />
-                <br />
-                (월 수입에서 남는 돈 ÷ 월 수입) × 100
-                <br />
-                = 저축률
+              <div>
+                <h3 className="font-semibold text-gray-900">
+                  Q. 자취 생활비는 사람마다 다른가요?
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-gray-600">
+                  네. 주거 형태, 식사 습관, 교통수단, 통신비 등 개인의 생활
+                  방식에 따라 실제 생활비는 달라질 수 있습니다. 이 계산기는
+                  직접 입력한 금액을 기준으로 계산합니다.
+                </p>
               </div>
             </div>
-          )}
-        </div>
-
-        {/* 어떤 비용을 입력할 수 있나요? */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <button
-            type="button"
-            onClick={() =>
-              setOpenSection(
-                openSection === "costs" ? null : "costs"
-              )
-            }
-            className="flex w-full items-center justify-between px-6 py-5 text-left"
-          >
-            <h2 className="text-lg font-semibold text-gray-900">
-              어떤 비용을 입력할 수 있나요?
-            </h2>
-
-            <span className="ml-4 text-2xl font-light text-gray-500">
-              {openSection === "costs" ? "−" : "+"}
-            </span>
-          </button>
-
-          {openSection === "costs" && (
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-              <p className="text-sm leading-7 text-gray-600">
-                월세와 관리비 같은 주거비, 전기요금·가스요금·통신비
-                같은 공과금, 식비·교통비·기타 비용을 각각 입력할 수
-                있습니다.
-              </p>
-
-              <p className="mt-3 text-sm leading-7 text-gray-600">
-                본인의 실제 지출 금액을 입력하면 현재 생활 패턴에
-                맞는 월 생활비를 확인할 수 있습니다.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* 자주 묻는 질문 */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <button
-            type="button"
-            onClick={() =>
-              setOpenSection(
-                openSection === "faq" ? null : "faq"
-              )
-            }
-            className="flex w-full items-center justify-between px-6 py-5 text-left"
-          >
-            <h2 className="text-lg font-semibold text-gray-900">
-              자주 묻는 질문
-            </h2>
-
-            <span className="ml-4 text-2xl font-light text-gray-500">
-              {openSection === "faq" ? "−" : "+"}
-            </span>
-          </button>
-
-          {openSection === "faq" && (
-            <div className="border-t border-gray-100 px-6 pb-6 pt-5">
-              <div className="space-y-5">
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Q. 자취 생활비에는 어떤 비용이 포함되나요?
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-7 text-gray-600">
-                    월세, 관리비, 전기요금, 가스요금, 통신비,
-                    식비, 교통비, 기타 비용을 입력해서 계산할 수
-                    있습니다.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Q. 월세가 없어도 계산할 수 있나요?
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-7 text-gray-600">
-                    네. 사용하지 않는 항목은 0원으로 두고 필요한
-                    비용만 입력하면 됩니다.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Q. 월 수입을 입력하지 않아도 되나요?
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-7 text-gray-600">
-                    네. 월 수입을 입력하지 않아도 예상 월 생활비와
-                    연간 생활비를 계산할 수 있습니다. 다만 월 수입에서
-                    남는 돈과 저축률을 확인하려면 월 수입을 입력해야
-                    합니다.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Q. 자취 생활비는 사람마다 다른가요?
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-7 text-gray-600">
-                    네. 주거 형태, 식사 습관, 교통수단, 통신비 등
-                    개인의 생활 방식에 따라 실제 생활비는 달라질 수
-                    있습니다. 이 계산기는 직접 입력한 금액을 기준으로
-                    계산합니다.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
+        </details>
       </section>
     </CalculatorLayout>
   );
