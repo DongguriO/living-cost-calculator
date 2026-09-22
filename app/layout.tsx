@@ -67,6 +67,24 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: "머니머니",
+      url: "https://living-cost-calculator.vercel.app",
+      description:
+        "생활비, 자동차, 이사, 여행, 주거, 결혼·육아 등 일상에서 필요한 다양한 비용을 간편하게 계산해보세요.",
+    },
+    {
+      "@type": "Organization",
+      name: "머니머니",
+      url: "https://living-cost-calculator.vercel.app",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -77,6 +95,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd),
+          }}
+        />
+
         {children}
         <Analytics />
       </body>
