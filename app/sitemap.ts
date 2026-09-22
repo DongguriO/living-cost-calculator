@@ -18,5 +18,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://living-cost-calculator.vercel.app/moving-cost",
       lastModified: new Date(),
     },
+    {
+      url: "https://living-cost-calculator.vercel.app/travel-cost",
+      lastModified: new Date(),
+    },
+    {
+      url: "https://living-cost-calculator.vercel.app/rent-vs-jeonse",
+      lastModified: new Date(),
+    },
+    {
+      url: "https://living-cost-calculator.vercel.app/car-purchase-cost",
+      lastModified: new Date(),
+    },
+    {
+      url: "https://living-cost-calculator.vercel.app/wedding-cost",
+      lastModified: new Date(),
+    },
+    {
+      url: "https://living-cost-calculator.vercel.app/childcare-cost",
+      lastModified: new Date(),
+    },
   ];
 }
