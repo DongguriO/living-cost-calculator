@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
 
 const initialValues = {
@@ -22,6 +22,7 @@ const categories = [
 
 export default function RentVsJeonseCalculator() {
   const [values, setValues] = useState(initialValues);
+  const [comparisonAnimated, setComparisonAnimated] = useState(false);
 
   const contractMonths = Number(values.contractMonths || 0);
   const jeonseDeposit = Number(values.jeonseDeposit || 0);
@@ -68,6 +69,16 @@ export default function RentVsJeonseCalculator() {
   const costDifference =
     totalRentCost - totalJeonseCost;
 
+  const jeonseIsCheaper =
+    totalJeonseCost < totalRentCost;
+
+  const rentIsCheaper =
+    totalRentCost < totalJeonseCost;
+
+  const costsAreEqual =
+    totalJeonseCost === totalRentCost;
+  
+
   const monthlyJeonseCost =
     contractMonths > 0
       ? totalJeonseCost / contractMonths
@@ -86,20 +97,28 @@ export default function RentVsJeonseCalculator() {
     {
       label: "전세대출 이자",
       amount: totalJeonseInterest,
+      color: "blue" as const,
     },
     {
       label: "전세 관리비",
       amount: totalJeonseMaintenance,
+      color: "blue" as const,
     },
     {
       label: "월세",
       amount: totalRent,
+      color: "emerald" as const,
     },
     {
       label: "월세 관리비",
       amount: totalRentMaintenance,
+      color: "emerald" as const,
     },
   ];
+
+  const sortedComparisonItems = [...comparisonItems].sort(
+    (a, b) => b.amount - a.amount
+  );
 
   const largestCostItem =
     comparisonItems.reduce(
@@ -161,6 +180,23 @@ export default function RentVsJeonseCalculator() {
       rentDeposit > 0 ||
       monthlyRent > 0 ||
       monthlyMaintenance > 0);
+     
+  useEffect(() => {
+    if (!resultReady) {
+      setComparisonAnimated(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setComparisonAnimated(true);
+    }, 100);
+
+    return () => window.clearTimeout(timer);
+  }, [
+    resultReady,
+    totalJeonseCost,
+    totalRentCost,
+  ]);
 
   return (
     <CalculatorLayout
@@ -169,8 +205,8 @@ export default function RentVsJeonseCalculator() {
       headerTitle="전세 vs 월세 계산기"
     >
       {/* 입력 */}
-      <div className="rounded-2xl bg-white p-6 shadow-md">
-        <h2 className="text-xl font-semibold text-gray-900">
+      <div className="rounded-2xl bg-white p-4 shadow-md sm:p-6">
+        <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
           전세·월세 조건 입력
         </h2>
 
@@ -284,7 +320,7 @@ export default function RentVsJeonseCalculator() {
 
       {/* 입력 전 */}
       {!resultReady && (
-        <div className="mt-6 rounded-2xl bg-white p-6 text-center shadow-md">
+        <div className="mt-6 rounded-2xl bg-white p-5 text-center shadow-md sm:p-6">
           <p className="text-2xl">🏘️</p>
 
           <h2 className="mt-3 text-lg font-semibold text-gray-900">
@@ -302,246 +338,268 @@ export default function RentVsJeonseCalculator() {
       {/* 결과 */}
       {resultReady && (
         <>
-            <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-            <p className="text-sm text-gray-300">
+          <div className="mt-6 rounded-2xl bg-black p-4 text-white shadow-md sm:p-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-300">
                 {contractMonths}개월 예상 주거비
-            </p>
-
-            <div
-                className={`mt-5 rounded-xl p-4 ${
-                totalJeonseCost <= totalRentCost
-                    ? "bg-green-50"
-                    : "bg-gray-900"
-                }`}
-            >
-                <p
-                className={
-                    totalJeonseCost <= totalRentCost
-                    ? "text-sm text-green-700"
-                    : "text-sm text-gray-300"
-                }
-                >
-                전세
-                </p>
-
-                <p
-                className={`mt-2 text-3xl font-bold ${
-                    totalJeonseCost <= totalRentCost
-                    ? "text-gray-900"
-                    : "text-white"
-                }`}
-                >
-                {formatWon(totalJeonseCost)}원
-                </p>
-
-                <p
-                className={
-                    totalJeonseCost <= totalRentCost
-                    ? "mt-2 text-xs text-green-700"
-                    : "mt-2 text-xs text-gray-400"
-                }
-                >
-                대출이자 + 관리비 기준
-                </p>
-
-                {totalJeonseCost < totalRentCost && (
-                <p className="mt-3 text-sm font-medium text-green-700">
-                    상대적으로 저렴해요
-                </p>
-                )}
-
-                {totalJeonseCost === totalRentCost && (
-                <p className="mt-3 text-sm font-medium text-green-700">
-                    월세와 예상 비용이 같아요
-                </p>
-                )}
+              </p>
             </div>
 
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
-
-            <div
-                className={`rounded-xl p-4 ${
-                totalRentCost <= totalJeonseCost
-                    ? "bg-green-50"
-                    : "bg-gray-900"
-                }`}
-            >
+            {/* 전세 vs 월세 비교 */}
+            <div className="mt-5 flex items-center gap-2 sm:gap-3">
+              <div
+                className={`
+                  self-center overflow-hidden rounded-2xl border
+                  transition-all duration-5000 ease-in-out
+                  motion-reduce:transition-none
+                  ${
+                    comparisonAnimated && totalJeonseCost < totalRentCost
+                      ? "flex-[56_1_0%] border-emerald-400 bg-emerald-800/25 p-5 shadow-[0_0_24px_rgba(52,211,153,0.12)] sm:p-6"
+                      : "flex-[44_1_0%] border-gray-800 bg-gray-900 p-4 sm:p-5"
+                  }
+                `}
+              >
                 <p
-                className={
-                    totalRentCost <= totalJeonseCost
-                    ? "text-sm text-green-700"
-                    : "text-sm text-gray-300"
-                }
+                  className={`text-center font-medium ${
+                    comparisonAnimated && totalJeonseCost < totalRentCost
+                      ? "text-emerald-300"
+                      : "text-gray-400"
+                  }`}
                 >
-                월세
-                </p>
-
-                <p
-                className={`mt-2 text-3xl font-bold ${
-                    totalRentCost <= totalJeonseCost
-                    ? "text-gray-900"
-                    : "text-white"
-                }`}
-                >
-                {formatWon(totalRentCost)}원
+                  전세 예상 비용
                 </p>
 
                 <p
-                className={
-                    totalRentCost <= totalJeonseCost
-                    ? "mt-2 text-xs text-green-700"
-                    : "mt-2 text-xs text-gray-400"
-                }
+                  className={`mt-2 text-center font-bold tracking-tight ${
+                    comparisonAnimated && totalJeonseCost < totalRentCost
+                      ? "text-3xl text-white sm:text-4xl"
+                      : "text-2xl text-white sm:text-3xl"
+                  }`}
                 >
-                월세 + 관리비 기준
+                  {formatWon(totalJeonseCost)}원
                 </p>
 
-                {totalRentCost < totalJeonseCost && (
-                <p className="mt-3 text-sm font-medium text-green-700">
-                    상대적으로 저렴해요
+                <p
+                  className={`mt-1 text-center text-xs ${
+                    comparisonAnimated && totalJeonseCost < totalRentCost
+                      ? "text-emerald-200/70"
+                      : "text-gray-500"
+                  }`}
+                >
+                  대출이자 + 관리비
                 </p>
-                )}
 
-                {totalRentCost === totalJeonseCost && (
-                <p className="mt-3 text-sm font-medium text-green-700">
-                    전세와 예상 비용이 같아요
+                {/* 월평균 구분선 — 큰 카드에서도 항상 표시 */}
+                <div
+                  className={`my-4 h-px ${
+                    comparisonAnimated && totalJeonseCost < totalRentCost
+                      ? "bg-emerald-300/20"
+                      : "bg-gray-800"
+                  }`}
+                />
+
+                <p
+                  className={`text-center text-xs ${
+                    comparisonAnimated && totalJeonseCost < totalRentCost
+                      ? "text-emerald-200/70"
+                      : "text-gray-500"
+                  }`}
+                >
+                  전세 월평균
                 </p>
-                )}
+
+                <p
+                  className={`mt-1 text-center font-semibold ${
+                    comparisonAnimated && totalJeonseCost < totalRentCost
+                      ? "text-lg text-white sm:text-xl"
+                      : "text-base text-white sm:text-lg"
+                  }`}
+                >
+                  {formatWon(monthlyJeonseCost)}원
+                </p>
+              </div>
+
+              <div
+                className={`
+                  self-center overflow-hidden rounded-2xl border
+                  transition-all duration-5000 ease-in-out
+                  motion-reduce:transition-none
+                  ${
+                    comparisonAnimated && totalRentCost < totalJeonseCost
+                      ? "flex-[56_1_0%] border-emerald-400 bg-emerald-800/25 p-5 shadow-[0_0_24px_rgba(52,211,153,0.12)] sm:p-6"
+                      : "flex-[44_1_0%] border-gray-800 bg-gray-900 p-4 sm:p-5"
+                  }
+                `}
+              >
+                <p
+                  className={`text-center font-medium ${
+                    comparisonAnimated && totalRentCost < totalJeonseCost
+                      ? "text-emerald-300"
+                      : "text-gray-400"
+                  }`}
+                >
+                  월세 예상 비용
+                </p>
+
+                <p
+                  className={`mt-2 text-center font-bold tracking-tight ${
+                    comparisonAnimated && totalRentCost < totalJeonseCost
+                      ? "text-3xl text-white sm:text-4xl"
+                      : "text-2xl text-white sm:text-3xl"
+                  }`}
+                >
+                  {formatWon(totalRentCost)}원
+                </p>
+
+                <p
+                  className={`mt-1 text-center text-xs ${
+                    comparisonAnimated && totalRentCost < totalJeonseCost
+                      ? "text-emerald-200/70"
+                      : "text-gray-500"
+                  }`}
+                >
+                  월세 + 관리비
+                </p>
+
+                {/* 월평균 구분선 — 큰 카드에서도 항상 표시 */}
+                <div
+                  className={`my-4 h-px ${
+                    comparisonAnimated && totalRentCost < totalJeonseCost
+                      ? "bg-emerald-300/20"
+                      : "bg-gray-800"
+                  }`}
+                />
+
+                <p
+                  className={`text-center text-xs ${
+                    comparisonAnimated && totalRentCost < totalJeonseCost
+                      ? "text-emerald-200/70"
+                      : "text-gray-500"
+                  }`}
+                >
+                  월세 월평균
+                </p>
+
+                <p
+                  className={`mt-1 text-center font-semibold ${
+                    comparisonAnimated && totalRentCost < totalJeonseCost
+                      ? "text-lg text-white sm:text-xl"
+                      : "text-base text-white sm:text-lg"
+                  }`}
+                >
+                  {formatWon(monthlyRentCost)}원
+                </p>
+              </div>
             </div>
 
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+            {/* 비교 결과 */}
+            <div className="mt-4 rounded-xl bg-gray-900 px-4 py-3 text-center">
+              <p className="text-xs text-gray-400">
+                예상 비용 차이
+              </p>
 
-            <p className="text-sm text-gray-300">
-                예상 월평균 비용
-            </p>
+              <p className="mt-1 text-sm font-semibold sm:text-base">
+                {formatWon(Math.abs(costDifference))}원
+              </p>
 
-            <div className="mt-3 flex justify-center gap-8">
-                <div>
-                <p className="text-xs text-gray-400">
-                    전세
-                </p>
-
-                <p className="mt-1 text-lg font-semibold">
-                    {formatWon(monthlyJeonseCost)}원
-                </p>
-                </div>
-
-                <div>
-                <p className="text-xs text-gray-400">
-                    월세
-                </p>
-
-                <p className="mt-1 text-lg font-semibold">
-                    {formatWon(monthlyRentCost)}원
-                </p>
-                </div>
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                {costDifference > 0
+                  ? "입력한 조건에서는 전세가 상대적으로 저렴해요."
+                  : costDifference < 0
+                  ? "입력한 조건에서는 월세가 상대적으로 저렴해요."
+                  : "전세와 월세의 예상 비용이 같아요."}
+              </p>
             </div>
-            </div>
+          </div>
 
-            {/* 비용 분석 */}
-            <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
-            <h2 className="text-xl font-semibold text-gray-900">
-                📊 전세·월세 비용 분석
+          {/* 비용 분석 */}
+          <div className="mt-6 rounded-2xl bg-white p-4 shadow-md sm:p-6">
+            <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
+              📊 전세·월세 비용 분석
             </h2>
 
             {/* 비용 차이 */}
             <div className="mt-5 rounded-xl bg-gray-50 p-4">
-                <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500">
                 예상 비용 차이
-                </p>
+              </p>
 
-                <p className="mt-1 text-lg font-semibold text-gray-900">
+              <p className="mt-1 text-lg font-semibold text-gray-900">
                 {formatWon(Math.abs(costDifference))}원
-                </p>
+              </p>
 
-                <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600">
                 {costDifference > 0
-                    ? "입력한 조건에서는 월세의 예상 비용이 더 높아요."
-                    : costDifference < 0
-                    ? "입력한 조건에서는 전세의 예상 비용이 더 높아요."
-                    : "전세와 월세의 예상 비용이 같아요."}
-                </p>
+                  ? "입력한 조건에서는 월세의 예상 비용이 더 높아요."
+                  : costDifference < 0
+                  ? "입력한 조건에서는 전세의 예상 비용이 더 높아요."
+                  : "전세와 월세의 예상 비용이 같아요."}
+              </p>
             </div>
 
             {/* 보증금 차이 */}
             <div className="mt-4 rounded-xl border border-gray-200 p-4">
-                <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500">
                 보증금 차이
-                </p>
+              </p>
 
-                <p className="mt-1 text-lg font-semibold text-gray-900">
+              <p className="mt-1 text-lg font-semibold text-gray-900">
                 {formatWon(Math.abs(depositDifference))}원
-                </p>
+              </p>
 
-                <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600">
                 {depositDifference > 0
-                    ? "전세에 더 많은 보증금이 필요해요."
-                    : depositDifference < 0
-                    ? "월세에 더 많은 보증금이 필요해요."
-                    : "두 방식의 보증금이 같아요."}
-                </p>
+                  ? "전세에 더 많은 보증금이 필요해요."
+                  : depositDifference < 0
+                  ? "월세에 더 많은 보증금이 필요해요."
+                  : "두 방식의 보증금이 같아요."}
+              </p>
             </div>
 
             {/* 가장 큰 비용 */}
             <div className="mt-4 rounded-xl border border-gray-200 p-4">
-                <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500">
                 가장 큰 비용 항목
-                </p>
+              </p>
 
-                <p className="mt-1 text-lg font-semibold text-gray-900">
+              <p className="mt-1 text-lg font-semibold text-gray-900">
                 {largestCostItem.label}
-                </p>
+              </p>
 
-                <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600">
                 {formatWon(largestCostItem.amount)}원
-                </p>
+              </p>
             </div>
 
             {/* 항목별 비용 */}
-            <div className="mt-6 space-y-5">
-                {comparisonItems.map((item) => (
-                <div key={item.label}>
-                    <div className="flex justify-between gap-4 text-sm">
-                    <span className="font-medium text-gray-700">
-                        {item.label}
-                    </span>
-
-                    <span className="shrink-0 text-gray-500">
-                        {formatWon(item.amount)}원
-                    </span>
-                    </div>
-
-                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-                    <div
-                        className="h-full rounded-full bg-gray-800"
-                        style={{
-                        width: `${Math.min(
-                            getPercentage(item.amount),
-                            100
-                        )}%`,
-                        }}
-                    />
-                    </div>
-                </div>
-                ))}
+            <div className="mt-6 space-y-4">
+              {sortedComparisonItems.map((item) => (
+                <CostRow
+                  key={item.label}
+                  label={item.label}
+                  amount={item.amount}
+                  total={totalJeonseCost + totalRentCost}
+                  color={item.color}
+                />
+              ))}
             </div>
 
             <p className="mt-5 text-xs leading-5 text-gray-400">
-                ※ 보증금 원금은 계약 종료 후 반환된다고 가정하며,
-                계산 결과에는 보증금 자체를 비용으로 포함하지 않습니다.
+              ※ 보증금 원금은 계약 종료 후 반환된다고 가정하며,
+              계산 결과에는 보증금 자체를 비용으로 포함하지 않습니다.
             </p>
-            </div>
+          </div>
         </>
       )}
 
       {/* SEO 콘텐츠 */}
       <section className="mt-6 space-y-3">
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             🏘️ 전세 vs 월세 계산기란?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               전세와 월세 중 어떤 주거 형태를 선택할지
               비교할 때 필요한 예상 비용을 계산해볼 수 있는
@@ -563,11 +621,11 @@ export default function RentVsJeonseCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             전세와 월세 계산 방법
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               전세는 전세대출이 있는 경우 대출금과 금리를 이용해
               계약기간 동안 발생하는 예상 이자를 계산합니다.
@@ -603,11 +661,11 @@ export default function RentVsJeonseCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             어떤 비용을 비교하나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               전세는 전세대출 이자와 관리비를 기준으로 계산합니다.
               대출금이 없다면 전세대출 이자는 0원으로 계산됩니다.
@@ -625,11 +683,11 @@ export default function RentVsJeonseCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자주 묻는 질문
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <div className="space-y-5">
               <div>
                 <h3 className="font-semibold text-gray-900">
@@ -677,7 +735,10 @@ export default function RentVsJeonseCalculator() {
       </section>
     </CalculatorLayout>
   );
+  
 }
+
+
 
 function formatInputValue(value: string) {
   if (!value) return "";
@@ -693,6 +754,68 @@ function formatInputValue(value: string) {
   }
 
   return formattedInteger;
+}
+
+function CostRow({
+  label,
+  amount,
+  total,
+  color,
+}: {
+  label: string;
+  amount: number;
+  total: number;
+  color: "blue" | "orange" | "emerald";
+}) {
+  const percentage =
+    total > 0
+      ? Math.round((amount / total) * 1000) / 10
+      : 0;
+
+  const colorStyles = {
+    blue: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    orange: {
+      text: "text-orange-600",
+      bar: "bg-orange-500",
+    },
+    emerald: {
+      text: "text-emerald-600",
+      bar: "bg-emerald-500",
+    },
+  };
+
+  const style = colorStyles[color];
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-2 text-sm">
+        <span className="min-w-0 font-medium text-gray-700">
+          {label}
+        </span>
+
+        <span
+          className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
+        >
+          {new Intl.NumberFormat("ko-KR").format(
+            Math.round(amount)
+          )}
+          원 · {percentage}%
+        </span>
+      </div>
+
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
+        <div
+          className={`h-full rounded-full ${style.bar}`}
+          style={{
+            width: `${Math.min(percentage, 100)}%`,
+          }}
+        />
+      </div>
+    </div>
+  );
 }
 
 function InputRow({
@@ -731,3 +854,4 @@ function InputRow({
     </div>
   );
 }
+
