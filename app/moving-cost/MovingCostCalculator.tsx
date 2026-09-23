@@ -130,8 +130,8 @@ export default function MovingCostPage() {
       headerTitle="이사 비용 계산기"
     >
       {/* 입력 영역 */}
-      <div className="rounded-2xl bg-white p-6 shadow-md">
-        <h2 className="mb-5 text-xl font-semibold text-gray-900">
+      <div className="rounded-2xl bg-white p-4 shadow-md sm:p-6">
+        <h2 className="mb-5 text-lg font-semibold text-gray-900 sm:text-xl">
           이사 비용 입력
         </h2>
 
@@ -169,7 +169,7 @@ export default function MovingCostPage() {
 
       {/* 입력 전 */}
       {total === 0 && (
-        <div className="mt-6 rounded-2xl bg-white p-6 text-center shadow-md">
+        <div className="mt-6 rounded-2xl bg-white p-5 text-center shadow-md sm:p-6">
           <p className="text-2xl">📦</p>
 
           <h2 className="mt-3 text-lg font-semibold text-gray-900">
