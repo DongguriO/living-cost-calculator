@@ -42,7 +42,6 @@ export default function CalculatorSearch({ calculators }: Props) {
 
   useEffect(() => {
     if (!normalizedQuery) {
-      setDisplayedCalculators(calculators);
       return;
     }
 
@@ -51,7 +50,11 @@ export default function CalculatorSearch({ calculators }: Props) {
     }, 220);
 
     return () => window.clearTimeout(timer);
-  }, [calculators, matchedCalculators, normalizedQuery]);
+  }, [matchedCalculators, normalizedQuery]);
+
+  const visibleCalculators = normalizedQuery
+    ? displayedCalculators
+    : calculators;
 
   const hasNoResults =
     normalizedQuery.length > 0 && matchedCalculators.length === 0;
@@ -108,7 +111,7 @@ export default function CalculatorSearch({ calculators }: Props) {
         </div>
       ) : (
         <div className="grid gap-4">
-          {displayedCalculators.map((calculator) => {
+          {visibleCalculators.map((calculator) => {
             const isMatch =
               !normalizedQuery ||
               matchedCalculators.some(

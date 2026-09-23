@@ -175,7 +175,6 @@ export default function RentVsJeonseCalculator() {
      
   useEffect(() => {
     if (!resultReady) {
-      setComparisonAnimated(false);
       return;
     }
 
@@ -184,11 +183,7 @@ export default function RentVsJeonseCalculator() {
     }, 100);
 
     return () => window.clearTimeout(timer);
-  }, [
-    resultReady,
-    totalJeonseCost,
-    totalRentCost,
-  ]);
+  }, [resultReady, totalJeonseCost, totalRentCost]);
 
   return (
     <CalculatorLayout
@@ -346,13 +341,13 @@ export default function RentVsJeonseCalculator() {
                   motion-reduce:transition-none
                   ${
                     comparisonAnimated && totalJeonseCost < totalRentCost
-                      ? "flex-[56_1_0%] border-emerald-400 bg-emerald-800/25 p-5 shadow-[0_0_24px_rgba(52,211,153,0.12)] sm:p-6"
-                      : "flex-[44_1_0%] border-gray-800 bg-gray-900 p-4 sm:p-5"
+                      ? "flex-[56_1_0%] border-emerald-400 bg-emerald-800/25 p-3 shadow-[0_0_24px_rgba(52,211,153,0.12)] sm:p-6"
+                      : "flex-[44_1_0%] border-gray-800 bg-gray-900 px-2 py-4 sm:p-5"
                   }
                 `}
               >
                 <p
-                  className={`text-center font-medium ${
+                  className={`whitespace-nowrap text-center text-sm font-medium sm:text-base ${
                     comparisonAnimated && totalJeonseCost < totalRentCost
                       ? "text-emerald-300"
                       : "text-gray-400"
@@ -362,13 +357,16 @@ export default function RentVsJeonseCalculator() {
                 </p>
 
                 <p
-                  className={`mt-2 text-center font-bold tracking-tight ${
+                  className={`mt-2 flex justify-center font-bold tracking-tight ${
                     comparisonAnimated && totalJeonseCost < totalRentCost
-                      ? "text-3xl text-white sm:text-4xl"
-                      : "text-2xl text-white sm:text-3xl"
+                      ? "text-2xl text-white sm:text-4xl"
+                      : "text-lg text-white sm:text-3xl"
                   }`}
                 >
-                  {formatWon(totalJeonseCost)}원
+                  <span className="inline-flex max-w-full items-baseline justify-center whitespace-nowrap">
+                    <span>{formatWon(totalJeonseCost)}</span>
+                    <span className="ml-px">원</span>
+                  </span>
                 </p>
 
                 <p
@@ -401,16 +399,18 @@ export default function RentVsJeonseCalculator() {
                 </p>
 
                 <p
-                  className={`mt-1 text-center font-semibold ${
+                  className={`mt-1 flex justify-center font-semibold ${
                     comparisonAnimated && totalJeonseCost < totalRentCost
-                      ? "text-lg text-white sm:text-xl"
-                      : "text-base text-white sm:text-lg"
+                      ? "text-base text-white sm:text-xl"
+                      : "text-sm text-white sm:text-lg"
                   }`}
                 >
-                  {formatWon(monthlyJeonseCost)}원
+                  <span className="inline-flex items-baseline justify-center whitespace-nowrap">
+                    <span>{formatWon(monthlyJeonseCost)}</span>
+                    <span className="ml-px">원</span>
+                  </span>
                 </p>
               </div>
-
               <div
                 className={`
                   self-center overflow-hidden rounded-2xl border
@@ -418,13 +418,13 @@ export default function RentVsJeonseCalculator() {
                   motion-reduce:transition-none
                   ${
                     comparisonAnimated && totalRentCost < totalJeonseCost
-                      ? "flex-[56_1_0%] border-emerald-400 bg-emerald-800/25 p-5 shadow-[0_0_24px_rgba(52,211,153,0.12)] sm:p-6"
-                      : "flex-[44_1_0%] border-gray-800 bg-gray-900 p-4 sm:p-5"
+                      ? "flex-[56_1_0%] border-emerald-400 bg-emerald-800/25 p-3 shadow-[0_0_24px_rgba(52,211,153,0.12)] sm:p-6"
+                      : "flex-[44_1_0%] border-gray-800 bg-gray-900 px-2 py-4 sm:p-5"
                   }
                 `}
               >
                 <p
-                  className={`text-center font-medium ${
+                  className={`whitespace-nowrap text-center text-sm font-medium sm:text-base ${
                     comparisonAnimated && totalRentCost < totalJeonseCost
                       ? "text-emerald-300"
                       : "text-gray-400"
@@ -434,13 +434,16 @@ export default function RentVsJeonseCalculator() {
                 </p>
 
                 <p
-                  className={`mt-2 text-center font-bold tracking-tight ${
+                  className={`mt-2 flex justify-center font-bold tracking-tight ${
                     comparisonAnimated && totalRentCost < totalJeonseCost
-                      ? "text-3xl text-white sm:text-4xl"
-                      : "text-2xl text-white sm:text-3xl"
+                      ? "text-2xl text-white sm:text-4xl"
+                      : "text-lg text-white sm:text-3xl"
                   }`}
                 >
-                  {formatWon(totalRentCost)}원
+                  <span className="inline-flex max-w-full items-baseline justify-center whitespace-nowrap">
+                    <span>{formatWon(totalRentCost)}</span>
+                    <span className="ml-px">원</span>
+                  </span>
                 </p>
 
                 <p
@@ -473,13 +476,16 @@ export default function RentVsJeonseCalculator() {
                 </p>
 
                 <p
-                  className={`mt-1 text-center font-semibold ${
+                  className={`mt-1 flex justify-center font-semibold ${
                     comparisonAnimated && totalRentCost < totalJeonseCost
-                      ? "text-lg text-white sm:text-xl"
-                      : "text-base text-white sm:text-lg"
+                      ? "text-base text-white sm:text-xl"
+                      : "text-sm text-white sm:text-lg"
                   }`}
                 >
-                  {formatWon(monthlyRentCost)}원
+                  <span className="inline-flex items-baseline justify-center whitespace-nowrap">
+                    <span>{formatWon(monthlyRentCost)}</span>
+                    <span className="ml-px">원</span>
+                  </span>
                 </p>
               </div>
             </div>
