@@ -20,15 +20,6 @@ const formatWon = (value: number) =>
     maximumFractionDigits: 0,
   }).format(Math.round(value));
 
-const categories = [
-  { key: "vehiclePrice", label: "차량 가격" },
-  { key: "options", label: "옵션/추가 장비" },
-  { key: "acquisitionTax", label: "취득세" },
-  { key: "registrationFee", label: "등록·기타 비용" },
-  { key: "deliveryFee", label: "탁송·배송비" },
-  { key: "insurance", label: "첫해 자동차보험" },
-] as const;
-
 export default function CarPurchaseCostCalculator() {
   const [values, setValues] = useState(initialValues);
 

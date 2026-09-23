@@ -133,7 +133,7 @@ export default function Home() {
       headerTitle="생활비 계산기"
     >
       {/* 입력 영역 */}
-      <div className="rounded-2xl bg-white p-6 shadow-md">
+      <div className="rounded-2xl bg-white p-4 shadow-md sm:p-6">
         <h2 className="mb-5 text-xl font-semibold text-gray-900">
           월 생활비 입력
         </h2>
@@ -233,7 +233,7 @@ export default function Home() {
 
       {/* 결과 */}
       {total > 0 && (
-        <div className="mt-6 rounded-2xl bg-black p-2 text-white shadow-md sm:p-6">
+        <div className="mt-6 rounded-2xl bg-black p-4 text-white shadow-md sm:p-6">
           <div className="text-center">
             <p className="text-sm text-gray-300">
               예상 월 생활비

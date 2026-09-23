@@ -424,7 +424,7 @@ export default function ChildcareCostCalculator() {
             </p>
           </div>
 
-          <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
+          <div className="mt-6 rounded-2xl bg-white p-4 shadow-md sm:p-6">
             <h2 className="text-xl font-semibold text-gray-900">
               📊 출산·육아 비용 분석
             </h2>
@@ -488,21 +488,21 @@ export default function ChildcareCostCalculator() {
           </summary>
 
           <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
-          <p className="text-sm leading-7 text-gray-600">
-            출산을 준비할 때는 병원비와 산후조리 비용,
-            육아용품 등 초기 비용이 발생할 수 있습니다.
-          </p>
+            <p className="text-sm leading-7 text-gray-600">
+              출산을 준비할 때는 병원비와 산후조리 비용,
+              육아용품 등 초기 비용이 발생할 수 있습니다.
+            </p>
 
-          <p className="mt-3 text-sm leading-7 text-gray-600">
-            출산 이후에도 수유·식비, 기저귀, 의류,
-            보육비, 교육비, 의료비 등 다양한 지출이
-            지속적으로 발생할 수 있습니다.
-          </p>
+            <p className="mt-3 text-sm leading-7 text-gray-600">
+              출산 이후에도 수유·식비, 기저귀, 의류,
+              보육비, 교육비, 의료비 등 다양한 지출이
+              지속적으로 발생할 수 있습니다.
+            </p>
 
-          <p className="mt-3 text-sm leading-7 text-gray-600">
-            이 계산기는 초기 비용과 월별 비용을 입력해
-            설정한 기간 동안 필요한 예상 비용을 계산합니다.
-          </p>
+            <p className="mt-3 text-sm leading-7 text-gray-600">
+              이 계산기는 초기 비용과 월별 비용을 입력해
+              설정한 기간 동안 필요한 예상 비용을 계산합니다.
+            </p>
           </div>
         </details>
 

@@ -128,7 +128,7 @@ export default function TravelCostCalculator() {
       headerTitle="여행 예산 계산기"
     >
       {/* 기본 여행 정보 */}
-      <div className="rounded-2xl bg-white p-6 shadow-md">
+      <div className="rounded-2xl bg-white p-4 shadow-md sm:p-6">
         <h2 className="text-xl font-semibold text-gray-900">
           기본 여행 정보
         </h2>

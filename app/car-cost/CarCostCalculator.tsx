@@ -14,8 +14,6 @@ const initialValues = {
   maintenance: "",
 };
 
-
-
 export default function CarCostPage() {
   const [values, setValues] = useState(initialValues);
 
@@ -142,7 +140,7 @@ return (
     headerTitle="자동차 유지비 계산기"
   >
     {/* 입력 */}
-    <div className="rounded-2xl bg-white p-6 shadow-md">
+    <div className="rounded-2xl bg-white p-4 shadow-md sm:p-6">
       <h2 className="text-xl font-semibold text-gray-900">
         기본 주행 정보
       </h2>
@@ -312,12 +310,12 @@ return (
         </div>
 
         {/* 비용 분석 */}
-        <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
+        <div className="mt-6 rounded-2xl bg-white p-4 shadow-md sm:p-6">
           <h2 className="text-xl font-semibold text-gray-900">
             ⛽ 비용 분석
           </h2>
 
-          <div className="mt-5 rounded-xl bg-gray-50 p-5">
+          <div className="mt-5 rounded-xl bg-gray-50 p-4">
             <p className="text-sm text-gray-500">
               가장 큰 지출
             </p>
@@ -352,11 +350,11 @@ return (
     {/* SEO 설명 콘텐츠 */}
     <section className="mt-6 space-y-3">
       <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+        <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
           자동차 유지비 계산기란?
         </summary>
 
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+        <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             자동차를 보유하면 연료비뿐만 아니라 자동차 보험료,
             자동차세, 주차비, 통행료, 정비비 등 다양한 유지비가
@@ -379,11 +377,11 @@ return (
       </details>
 
       <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+        <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
           자동차 유지비 계산 방법
         </summary>
 
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+        <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             월 연료비는 월 주행거리를 연비로 나눈 뒤 연료 가격을
             곱해서 계산합니다.
@@ -431,11 +429,11 @@ return (
       </details>
 
       <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+        <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
           어떤 비용을 입력할 수 있나요?
         </summary>
 
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+        <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             자동차의 월 주행거리, 연비, 연료 가격을 입력할 수
             있습니다.
@@ -456,11 +454,11 @@ return (
       </details>
 
       <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-        <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+        <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
           자주 묻는 질문
         </summary>
 
-        <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+        <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-gray-900">

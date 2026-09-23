@@ -13,13 +13,6 @@ const initialValues = {
   monthlyMaintenance: "",
 };
 
-const categories = [
-  { key: "jeonseInterest", label: "전세대출 이자" },
-  { key: "jeonseMaintenance", label: "전세 관리비" },
-  { key: "rent", label: "월세" },
-  { key: "rentMaintenance", label: "월세 관리비" },
-] as const;
-
 export default function RentVsJeonseCalculator() {
   const [values, setValues] = useState(initialValues);
   const [comparisonAnimated, setComparisonAnimated] = useState(false);
@@ -30,9 +23,7 @@ export default function RentVsJeonseCalculator() {
   const jeonseLoanRate = Number(values.jeonseLoanRate || 0);
   const rentDeposit = Number(values.rentDeposit || 0);
   const monthlyRent = Number(values.monthlyRent || 0);
-  const monthlyMaintenance = Number(
-    values.monthlyMaintenance || 0
-  );
+  const monthlyMaintenance = Number(values.monthlyMaintenance || 0);
 
   // 전세 대출 연간 이자
   const annualJeonseInterest =
