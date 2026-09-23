@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
+import CostRow from "../components/CostRow";
 
 const initialValues = {
   moving: "",
@@ -72,37 +73,6 @@ export default function MovingCostPage() {
   const sortedCategoryData = [...categoryData].sort(
     (a, b) => b.amount - a.amount
   );
-
-  const categoryColors = {
-    moving: {
-      text: "text-blue-600",
-      bar: "bg-blue-500",
-    },
-    packing: {
-      text: "text-blue-600",
-      bar: "bg-blue-500",
-    },
-    ladder: {
-      text: "text-orange-600",
-      bar: "bg-orange-500",
-    },
-    cleaning: {
-      text: "text-orange-600",
-      bar: "bg-orange-500",
-    },
-    disposal: {
-      text: "text-orange-600",
-      bar: "bg-orange-500",
-    },
-    brokerage: {
-      text: "text-emerald-600",
-      bar: "bg-emerald-500",
-    },
-    etc: {
-      text: "text-emerald-600",
-      bar: "bg-emerald-500",
-    },
-  } as const;
 
   const topExpense =
     total > 0
@@ -251,38 +221,24 @@ export default function MovingCostPage() {
 
             {/* 항목별 비용 */}
             <div className="mt-6 space-y-4">
-              {sortedCategoryData.map((category) => {
-                const style = categoryColors[category.key];
-
-                return (
-                  <div key={category.key}>
-                    <div className="flex items-center justify-between gap-2 text-sm">
-                      <span className="min-w-0 font-medium text-gray-700">
-                        {category.label}
-                      </span>
-
-                      <span
-                        className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
-                      >
-                        {formatWon(category.amount)}원 ·{" "}
-                        {getPercentage(category.amount)}%
-                      </span>
-                    </div>
-
-                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-                      <div
-                        className={`h-full rounded-full ${style.bar}`}
-                        style={{
-                          width: `${Math.min(
-                            getPercentage(category.amount),
-                            100
-                          )}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+              {sortedCategoryData.map((category) => (
+                <CostRow
+                  key={category.key}
+                  label={category.label}
+                  amount={category.amount}
+                  total={total}
+                  color={
+                    category.key === "moving" || category.key === "packing"
+                      ? "blue"
+                      : category.key === "ladder" ||
+                          category.key === "cleaning" ||
+                          category.key === "disposal"
+                        ? "orange"
+                        : "emerald"
+                  }
+                  formatWon={formatWon}
+                />
+              ))}
             </div>
           </div>
         </>
