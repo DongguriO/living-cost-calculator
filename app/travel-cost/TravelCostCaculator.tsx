@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
+import CostRow from "../components/CostRow";
 
 const initialValues = {
   days: "",
@@ -316,13 +317,13 @@ export default function TravelCostCalculator() {
           </div>
 
           {/* 비용 분석 */}
-          <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
+          <div className="mt-6 rounded-2xl bg-white p-4 shadow-md sm:p-6">
             <h2 className="text-xl font-semibold text-gray-900">
               💳 여행 비용 분석
             </h2>
 
             {/* 가장 큰 지출 */}
-            <div className="mt-5 rounded-xl bg-gray-50 p-5">
+            <div className="mt-5 rounded-xl bg-gray-50 p-4">
               <p className="text-sm text-gray-500">
                 가장 큰 지출
               </p>
@@ -346,6 +347,7 @@ export default function TravelCostCalculator() {
                   amount={item.amount}
                   total={totalCost}
                   color={item.color}
+                  formatWon={formatWon}
                 />
               ))}
             </div>
@@ -356,11 +358,11 @@ export default function TravelCostCalculator() {
       {/* SEO 설명 콘텐츠 */}
       <section className="mt-6 space-y-3">
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             여행 예산 계산기란?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               여행을 계획할 때는 교통비, 숙박비, 식비뿐만
               아니라 관광이나 체험, 쇼핑 등 다양한 비용이
@@ -382,11 +384,11 @@ export default function TravelCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             여행비 계산 방법
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               총 여행비는 입력한 교통비, 숙박비, 식비,
               관광·체험비, 쇼핑·기타비를 모두 합산해서
@@ -442,11 +444,11 @@ export default function TravelCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             어떤 비용을 입력할 수 있나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               교통비에는 항공권, 기차, 버스, 렌터카,
               대중교통 등 여행에 필요한 교통 관련 비용을
@@ -482,11 +484,11 @@ export default function TravelCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자주 묻는 질문
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <div className="space-y-5">
               <div>
                 <h3 className="font-semibold text-gray-900">
@@ -591,68 +593,6 @@ function InputRow({
       <span className="w-6 shrink-0 whitespace-nowrap text-right text-sm text-gray-500 sm:w-14">
         {unit}
       </span>
-    </div>
-  );
-}
-
-function CostRow({
-  label,
-  amount,
-  total,
-  color,
-}: {
-  label: string;
-  amount: number;
-  total: number;
-  color: "blue" | "orange" | "emerald";
-}) {
-  const percentage =
-    total > 0
-      ? Math.round((amount / total) * 1000) / 10
-      : 0;
-
-  const colorStyles = {
-    blue: {
-      text: "text-blue-600",
-      bar: "bg-blue-500",
-    },
-    orange: {
-      text: "text-orange-600",
-      bar: "bg-orange-500",
-    },
-    emerald: {
-      text: "text-emerald-600",
-      bar: "bg-emerald-500",
-    },
-  };
-
-  const style = colorStyles[color];
-
-  return (
-    <div>
-      <div className="flex items-center justify-between gap-2 text-sm">
-        <span className="min-w-0 font-medium text-gray-700">
-          {label}
-        </span>
-
-        <span
-          className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
-        >
-          {new Intl.NumberFormat("ko-KR").format(
-            Math.round(amount)
-          )}
-          원 · {percentage}%
-        </span>
-      </div>
-
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-        <div
-          className={`h-full rounded-full ${style.bar}`}
-          style={{
-            width: `${Math.min(percentage, 100)}%`,
-          }}
-        />
-      </div>
     </div>
   );
 }

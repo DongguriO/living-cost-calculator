@@ -83,8 +83,8 @@ export default function MovingCostPage() {
       bar: "bg-blue-500",
     },
     ladder: {
-      text: "text-blue-600",
-      bar: "bg-blue-500",
+      text: "text-orange-600",
+      bar: "bg-orange-500",
     },
     cleaning: {
       text: "text-orange-600",
@@ -226,7 +226,7 @@ export default function MovingCostPage() {
           </div>
 
           {/* 비용 분석 */}
-          <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
+          <div className="mt-6 rounded-2xl bg-white p-4 shadow-md sm:p-6">
             <h2 className="text-xl font-semibold text-gray-900">
               📊 이사 비용 분석
             </h2>

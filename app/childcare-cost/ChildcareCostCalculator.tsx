@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
+import CostRow from "../components/CostRow";
 
 const initialValues = {
   delivery: "",
@@ -466,6 +467,7 @@ export default function ChildcareCostCalculator() {
                   amount={item.amount}
                   total={totalChildcareCost}
                   color={item.color}
+                  formatWon={formatWon}
                 />
               ))}
             </div>
@@ -672,65 +674,6 @@ function InputRow({
         <span className="w-9 shrink-0 whitespace-nowrap text-right text-sm text-gray-500 sm:w-14">
             {unit}
         </span>
-    </div>
-  );
-}
-
-function CostRow({
-  label,
-  amount,
-  total,
-  color,
-}: {
-  label: string;
-  amount: number;
-  total: number;
-  color: "blue" | "orange" | "emerald";
-}) {
-  const percentage =
-    total > 0
-      ? Math.round((amount / total) * 1000) / 10
-      : 0;
-
-  const colorStyles = {
-    blue: {
-      text: "text-blue-600",
-      bar: "bg-blue-500",
-    },
-    orange: {
-      text: "text-orange-600",
-      bar: "bg-orange-500",
-    },
-    emerald: {
-      text: "text-emerald-600",
-      bar: "bg-emerald-500",
-    },
-  };
-
-  const style = colorStyles[color];
-
-  return (
-    <div>
-      <div className="flex items-center justify-between gap-2 text-sm">
-        <span className="min-w-0 font-medium text-gray-700">
-          {label}
-        </span>
-
-        <span
-          className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
-        >
-          {formatWon(amount)}원 · {percentage}%
-        </span>
-      </div>
-
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-        <div
-          className={`h-full rounded-full ${style.bar}`}
-          style={{
-            width: `${Math.min(percentage, 100)}%`,
-          }}
-        />
-      </div>
     </div>
   );
 }

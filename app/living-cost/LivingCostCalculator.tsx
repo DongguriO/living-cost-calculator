@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CalculatorLayout from "../components/CalculatorLayout";
+import CostRow from "../components/CostRow";
 
 const initialValues = {
   income: "",
@@ -300,7 +301,7 @@ export default function Home() {
 
       {/* 분석 */}
       {total > 0 && (
-        <div className="mt-6 rounded-2xl bg-white p-6 shadow-md">
+        <div className="mt-6 rounded-2xl bg-white p-4 shadow-md sm:p-6">
           <h2 className="text-xl font-semibold text-gray-900">
             📊 생활비 분석
           </h2>
@@ -435,11 +436,11 @@ export default function Home() {
       {/* SEO 설명 콘텐츠 */}
       <section className="mt-6 space-y-3">
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자취 생활비 계산기란?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               자취를 시작하면 월세뿐만 아니라 관리비, 전기요금, 가스요금,
               통신비, 식비, 교통비 등 다양한 생활비가 발생합니다.
@@ -458,11 +459,11 @@ export default function Home() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자취 생활비 계산 방법
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               예상 월 생활비는 입력한 월 지출 항목을 모두 더해서 계산합니다.
             </p>
@@ -502,11 +503,11 @@ export default function Home() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             어떤 비용을 입력할 수 있나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <p className="text-sm leading-7 text-gray-600">
               월세와 관리비 같은 주거비, 전기요금·가스요금·통신비 같은 공과금,
               식비·교통비·기타 비용을 각각 입력할 수 있습니다.
@@ -520,11 +521,11 @@ export default function Home() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자주 묻는 질문
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <div className="space-y-5">
               <div>
                 <h3 className="font-semibold text-gray-900">
