@@ -33,21 +33,6 @@ const categories: {
   { key: "etc", label: "기타", group: "생활비" },
 ];
 
-const groupStyles = {
-  주거비: {
-    text: "text-blue-600",
-    bar: "bg-blue-500",
-  },
-  공과금: {
-    text: "text-orange-600",
-    bar: "bg-orange-500",
-  },
-  생활비: {
-    text: "text-emerald-600",
-    bar: "bg-emerald-500",
-  },
-} as const;
-
 export default function Home() {
   const [values, setValues] = useState(initialValues);
 
@@ -399,36 +384,22 @@ export default function Home() {
 
           {/* 항목별 지출 */}
           <div className="mt-6 space-y-4">
-            {expenseData.map((expense) => {
-              const style = groupStyles[expense.group];
-
-              return (
-                <div key={expense.key}>
-                  <div className="flex justify-between text-sm">
-                    <span className="font-medium text-gray-700">
-                      {expense.label}
-                    </span>
-
-                    <span className={`font-medium ${style.text}`}>
-                      {formatWon(expense.amount)}원 ·{" "}
-                      {getPercentage(expense.amount)}%
-                    </span>
-                  </div>
-
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-                    <div
-                      className={`h-full rounded-full ${style.bar}`}
-                      style={{
-                        width: `${Math.min(
-                          getPercentage(expense.amount),
-                          100
-                        )}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+            {expenseData.map((expense) => (
+              <CostRow
+                key={expense.key}
+                label={expense.label}
+                amount={expense.amount}
+                total={total}
+                color={
+                  expense.group === "주거비"
+                    ? "blue"
+                    : expense.group === "공과금"
+                      ? "orange"
+                      : "emerald"
+                }
+                formatWon={formatWon}
+              />
+            ))}
           </div>
         </div>
       )}
