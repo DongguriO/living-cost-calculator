@@ -15,6 +15,11 @@ const initialValues = {
   loanMonths: "",
 };
 
+const formatWon = (value: number) =>
+  new Intl.NumberFormat("ko-KR", {
+    maximumFractionDigits: 0,
+  }).format(Math.round(value));
+
 const categories = [
   { key: "vehiclePrice", label: "차량 가격" },
   { key: "options", label: "옵션/추가 장비" },
@@ -110,28 +115,38 @@ export default function CarPurchaseCostCalculator() {
     {
       label: "차량 가격",
       amount: vehiclePrice,
+      color: "blue" as const,
     },
     {
       label: "옵션/추가 장비",
       amount: options,
+      color: "blue" as const,
     },
     {
       label: "취득세",
       amount: acquisitionTax,
+      color: "orange" as const,
     },
     {
       label: "등록·기타 비용",
       amount: registrationFee,
+      color: "orange" as const,
     },
     {
       label: "탁송·배송비",
       amount: deliveryFee,
+      color: "orange" as const,
     },
     {
       label: "첫해 자동차보험",
       amount: insurance,
+      color: "emerald" as const,
     },
   ];
+
+  const sortedCostItems = [...costItems].sort(
+    (a, b) => b.amount - a.amount
+  );
 
   const largestCostItem = costItems.reduce(
     (largest, item) =>
@@ -186,11 +201,6 @@ export default function CarPurchaseCostCalculator() {
     setValues(initialValues);
   };
 
-  const formatWon = (value: number) =>
-    new Intl.NumberFormat("ko-KR", {
-      maximumFractionDigits: 0,
-    }).format(Math.round(value));
-
   const resultReady =
     vehiclePrice > 0 ||
     options > 0 ||
@@ -205,7 +215,7 @@ export default function CarPurchaseCostCalculator() {
       headerTitle="자동차 구매비용"
     >
       {/* 입력 */}
-      <div className="rounded-2xl bg-white p-6 shadow-md">
+      <div className="rounded-2xl bg-white p-4 shadow-md sm:p-6">
         <h2 className="text-xl font-semibold text-gray-900">
           자동차 구매 조건 입력
         </h2>
@@ -355,16 +365,15 @@ export default function CarPurchaseCostCalculator() {
 
       {/* 입력 전 */}
       {!resultReady && (
-        <div className="mt-6 rounded-2xl bg-white p-6 text-center shadow-md">
+        <div className="mt-6 rounded-2xl bg-white p-5 text-center shadow-md sm:p-6">
           <p className="text-2xl">🚘</p>
 
-          <h2 className="mt-3 text-lg font-semibold text-gray-900">
+          <h2 className="mt-3 break-keep text-lg font-semibold text-gray-900">
             자동차를 구매하려면 얼마가 필요할까?
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-gray-500">
             차량 가격과 세금, 부대비용, 할부 조건을 입력하면
-            <br />
             자동차 구매에 필요한 예상 비용을 계산해드려요.
           </p>
         </div>
@@ -373,50 +382,64 @@ export default function CarPurchaseCostCalculator() {
       {/* 결과 */}
       {resultReady && (
         <>
-          <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-            <p className="text-sm text-gray-300">
-              자동차 구매 예상 비용
-            </p>
+          <div className="mt-6 rounded-2xl bg-black p-4 text-white shadow-md sm:p-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-300">
+                자동차 구매 예상 비용
+              </p>
 
-            <p className="mt-3 text-4xl font-bold">
-              {formatWon(totalPurchaseCost)}원
-            </p>
+              <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+                {formatWon(totalPurchaseCost)}원
+              </p>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              차량 가격 + 취득세 + 부대비용 + 첫해 보험료
-            </p>
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  실제 필요한 초기 현금
+                </p>
 
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(initialCashNeeded)}원
+                </p>
+              </div>
 
-            <p className="text-sm text-gray-300">
-              실제 필요한 초기 현금
-            </p>
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  할부 원금
+                </p>
 
-            <p className="mt-2 text-2xl font-bold">
-              {formatWon(initialCashNeeded)}원
-            </p>
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(loanPrincipal)}원
+                </p>
+              </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              총 구매비용에서 할부 원금을 제외한 금액
-            </p>
-
-            {monthlyPayment > 0 && (
-              <>
-                <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
-
-                <p className="text-sm text-gray-300">
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
                   월 예상 할부금
                 </p>
 
-                <p className="mt-2 text-2xl font-bold">
-                  {formatWon(monthlyPayment)}원
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {monthlyPayment > 0
+                    ? `${formatWon(monthlyPayment)}원`
+                    : "할부 조건 입력 필요"}
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  총 할부 이자
                 </p>
 
-                <p className="mt-2 text-xs text-gray-400">
-                  {loanMonths}개월 · 연 {loanRate}% 기준
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(totalLoanInterest)}원
                 </p>
-              </>
-            )}
+              </div>
+            </div>
+
+            <p className="mt-4 text-center text-xs leading-5 text-gray-400">
+              차량 가격, 취득세, 부대비용, 첫해 보험료를 포함한 예상 비용입니다.
+            </p>
           </div>
 
           {/* 비용 분석 */}
@@ -474,31 +497,15 @@ export default function CarPurchaseCostCalculator() {
             )}
 
             {/* 항목별 비용 */}
-            <div className="mt-6 space-y-5">
-              {costItems.map((item) => (
-                <div key={item.label}>
-                  <div className="flex justify-between gap-4 text-sm">
-                    <span className="font-medium text-gray-700">
-                      {item.label}
-                    </span>
-
-                    <span className="shrink-0 text-gray-500">
-                      {formatWon(item.amount)}원
-                    </span>
-                  </div>
-
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-                    <div
-                      className="h-full rounded-full bg-gray-800"
-                      style={{
-                        width: `${Math.min(
-                          getPercentage(item.amount),
-                          100
-                        )}%`,
-                      }}
-                    />
-                  </div>
-                </div>
+            <div className="mt-6 space-y-4">
+              {sortedCostItems.map((item) => (
+                <CostRow
+                  key={item.label}
+                  label={item.label}
+                  amount={item.amount}
+                  total={totalPurchaseCost}
+                  color={item.color}
+                />
               ))}
             </div>
 
@@ -514,11 +521,11 @@ export default function CarPurchaseCostCalculator() {
       {/* SEO 콘텐츠 */}
       <section className="mt-6 space-y-3">
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             🚘 자동차 구매비용 계산기란?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             자동차를 구매할 때 차량 가격만 생각하기보다
             취득세, 등록비, 탁송비, 보험료 등 다양한 비용을
@@ -539,11 +546,11 @@ export default function CarPurchaseCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자동차 구매비용은 어떻게 계산하나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             기본적인 자동차 구매비용은 차량 가격에 옵션과
             취득세, 등록·기타 비용, 탁송·배송비,
@@ -574,11 +581,11 @@ export default function CarPurchaseCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             어떤 비용을 포함하나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             차량 가격과 옵션, 취득세, 등록·기타 비용,
             탁송·배송비, 첫해 자동차보험료를 입력할 수 있습니다.
@@ -599,11 +606,11 @@ export default function CarPurchaseCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자주 묻는 질문
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-gray-900">
@@ -679,6 +686,65 @@ function formatInputValue(value: string) {
   return formattedInteger;
 }
 
+function CostRow({
+  label,
+  amount,
+  total,
+  color,
+}: {
+  label: string;
+  amount: number;
+  total: number;
+  color: "blue" | "orange" | "emerald";
+}) {
+  const percentage =
+    total > 0
+      ? Math.round((amount / total) * 1000) / 10
+      : 0;
+
+  const colorStyles = {
+    blue: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    orange: {
+      text: "text-orange-600",
+      bar: "bg-orange-500",
+    },
+    emerald: {
+      text: "text-emerald-600",
+      bar: "bg-emerald-500",
+    },
+  };
+
+  const style = colorStyles[color];
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-2 text-sm">
+        <span className="min-w-0 font-medium text-gray-700">
+          {label}
+        </span>
+
+        <span
+          className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
+        >
+          {formatWon(amount)}원 · {percentage}%
+        </span>
+      </div>
+
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
+        <div
+          className={`h-full rounded-full ${style.bar}`}
+          style={{
+            width: `${Math.min(percentage, 100)}%`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 function InputRow({
   label,
   value,
@@ -709,7 +775,7 @@ function InputRow({
             className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-3 text-right outline-none transition focus:border-black sm:px-4"
         />
 
-        <span className="w-6 shrink-0 text-right text-sm text-gray-500 sm:w-14">
+        <span className="w-10 shrink-0 whitespace-nowrap text-right text-sm text-gray-500 sm:w-14">
             {unit}
         </span>
     </div>
