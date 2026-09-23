@@ -36,24 +36,33 @@ export default function TravelCostCalculator() {
     {
       label: "교통비",
       amount: transportation,
+      color: "blue" as const,
     },
     {
       label: "숙박비",
       amount: accommodation,
+      color: "blue" as const,
     },
     {
       label: "식비",
       amount: food,
+      color: "orange" as const,
     },
     {
       label: "관광·체험비",
       amount: activities,
+      color: "emerald" as const,
     },
     {
       label: "쇼핑·기타비",
       amount: shoppingEtc,
+      color: "emerald" as const,
     },
   ];
+
+  const sortedCostItems = [...costItems].sort(
+    (a, b) => b.amount - a.amount
+  );
 
   const largestCostItem = costItems.reduce(
     (largest, item) =>
@@ -244,63 +253,65 @@ export default function TravelCostCalculator() {
       {/* 결과 */}
       {totalCost > 0 && (
         <>
-          <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-            <p className="text-sm text-gray-300">
-              총 예상 여행비
-            </p>
+          <div className="mt-6 rounded-2xl bg-black p-4 text-white shadow-md sm:p-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-300">
+                총 예상 여행비
+              </p>
 
-            <p className="mt-2 text-4xl font-bold">
-              {formatWon(totalCost)}원
-            </p>
+              <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+                {formatWon(totalCost)}원
+              </p>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              입력한 여행 비용을 모두 합산한 금액이에요.
-            </p>
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  1인당 여행비
+                </p>
 
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {people > 0
+                    ? `${formatWon(perPersonCost)}원`
+                    : "인원 입력 필요"}
+                </p>
+              </div>
 
-            <p className="text-sm text-gray-300">
-              1인당 여행비
-            </p>
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  하루 평균 비용
+                </p>
 
-            <p className="mt-2 text-2xl font-semibold">
-              {people > 0
-                ? `${formatWon(perPersonCost)}원`
-                : "인원을 입력해주세요"}
-            </p>
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {days > 0
+                    ? `${formatWon(dailyCost)}원`
+                    : "기간 입력 필요"}
+                </p>
+              </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              총 여행비 ÷ 여행 인원
-            </p>
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  예비비
+                </p>
 
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(contingencyCost)}원
+                </p>
+              </div>
 
-            <p className="text-sm text-gray-300">
-              하루 평균 비용
-            </p>
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  예비비 포함 예상 비용
+                </p>
 
-            <p className="mt-2 text-2xl font-semibold">
-              {days > 0
-                ? `${formatWon(dailyCost)}원`
-                : "여행 기간을 입력해주세요"}
-            </p>
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(estimatedCostWithContingency)}원
+                </p>
+              </div>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              총 여행비 ÷ 여행 기간
-            </p>
-
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
-
-            <p className="text-sm text-gray-300">
-              예비비 포함 예상 비용
-            </p>
-
-            <p className="mt-2 text-2xl font-semibold">
-              {formatWon(estimatedCostWithContingency)}원
-            </p>
-
-            <p className="mt-2 text-xs text-gray-400">
-              총 여행비 + 예비비 10%
+            <p className="mt-4 text-center text-xs leading-5 text-gray-400">
+              예비비는 총 여행비의 10%를 기준으로 계산했어요.
             </p>
           </div>
 
@@ -328,35 +339,15 @@ export default function TravelCostCalculator() {
 
             {/* 항목별 비용 */}
             <div className="mt-5 space-y-4">
-              <CostRow
-                label="교통비"
-                amount={transportation}
-                total={totalCost}
-              />
-
-              <CostRow
-                label="숙박비"
-                amount={accommodation}
-                total={totalCost}
-              />
-
-              <CostRow
-                label="식비"
-                amount={food}
-                total={totalCost}
-              />
-
-              <CostRow
-                label="관광·체험비"
-                amount={activities}
-                total={totalCost}
-              />
-
-              <CostRow
-                label="쇼핑·기타비"
-                amount={shoppingEtc}
-                total={totalCost}
-              />
+              {sortedCostItems.map((item) => (
+                <CostRow
+                  key={item.label}
+                  label={item.label}
+                  amount={item.amount}
+                  total={totalCost}
+                  color={item.color}
+                />
+              ))}
             </div>
           </div>
         </>
@@ -608,24 +599,45 @@ function CostRow({
   label,
   amount,
   total,
+  color,
 }: {
   label: string;
   amount: number;
   total: number;
+  color: "blue" | "orange" | "emerald";
 }) {
   const percentage =
     total > 0
       ? Math.round((amount / total) * 1000) / 10
       : 0;
 
+  const colorStyles = {
+    blue: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    orange: {
+      text: "text-orange-600",
+      bar: "bg-orange-500",
+    },
+    emerald: {
+      text: "text-emerald-600",
+      bar: "bg-emerald-500",
+    },
+  };
+
+  const style = colorStyles[color];
+
   return (
     <div>
-      <div className="flex justify-between text-sm">
-        <span className="font-medium text-gray-700">
+      <div className="flex items-center justify-between gap-2 text-sm">
+        <span className="min-w-0 font-medium text-gray-700">
           {label}
         </span>
 
-        <span className="text-gray-500">
+        <span
+          className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
+        >
           {new Intl.NumberFormat("ko-KR").format(
             Math.round(amount)
           )}
@@ -635,7 +647,7 @@ function CostRow({
 
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
         <div
-          className="h-full rounded-full bg-gray-800"
+          className={`h-full rounded-full ${style.bar}`}
           style={{
             width: `${Math.min(percentage, 100)}%`,
           }}
