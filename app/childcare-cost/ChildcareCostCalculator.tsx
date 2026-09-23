@@ -18,6 +18,11 @@ const initialValues = {
   months: "12",
 };
 
+const formatWon = (value: number) =>
+  new Intl.NumberFormat("ko-KR", {
+    maximumFractionDigits: 0,
+  }).format(Math.round(value));
+
 export default function ChildcareCostCalculator() {
   const [values, setValues] = useState(initialValues);
 
@@ -63,48 +68,63 @@ export default function ChildcareCostCalculator() {
     {
       label: "출산 관련 비용",
       amount: delivery,
+      color: "blue" as const,
     },
     {
       label: "병원·진료비",
       amount: hospital,
+      color: "blue" as const,
     },
     {
       label: "산후조리 비용",
       amount: postpartum,
+      color: "blue" as const,
     },
     {
       label: "육아용품",
       amount: babyItems,
+      color: "blue" as const,
     },
     {
       label: "수유·식비",
       amount: feeding * months,
+      color: "emerald" as const,
     },
     {
       label: "기저귀",
       amount: diapers * months,
+      color: "emerald" as const,
     },
     {
       label: "의류",
       amount: clothing * months,
+      color: "emerald" as const,
     },
     {
       label: "보육비",
       amount: childcare * months,
+      color: "orange" as const,
     },
     {
       label: "교육비",
       amount: education * months,
+      color: "orange" as const,
     },
     {
       label: "의료비",
       amount: medical * months,
+      color: "orange" as const,
     },
     {
       label: "기타 생활비",
       amount: monthlyOther * months,
+      color: "emerald" as const,
     },
   ];
+
+  const sortedCostItems = [...costItems].sort(
+    (a, b) => b.amount - a.amount
+  );
 
   const largestCostItem = costItems.reduce(
     (largest, item) =>
@@ -160,10 +180,6 @@ export default function ChildcareCostCalculator() {
     setValues(initialValues);
   };
 
-  const formatWon = (value: number) =>
-    new Intl.NumberFormat("ko-KR", {
-      maximumFractionDigits: 0,
-    }).format(Math.round(value));
 
   const resultReady =
     delivery > 0 ||
@@ -179,8 +195,8 @@ export default function ChildcareCostCalculator() {
       headerTitle="출산·육아 비용"
     >
       {/* 입력 */}
-      <div className="rounded-2xl bg-white p-6 shadow-md">
-        <h2 className="text-xl font-semibold text-gray-900">
+      <div className="rounded-2xl bg-white p-4 shadow-md sm:p-6">
+        <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
           출산·육아 조건 입력
         </h2>
 
@@ -362,7 +378,6 @@ export default function ChildcareCostCalculator() {
 
           <p className="mt-2 text-sm leading-6 text-gray-500">
             출산에 필요한 초기 비용과 월별 육아비용을 입력하면
-            <br />
             설정한 기간 동안의 예상 비용을 계산해드려요.
           </p>
         </div>
@@ -371,31 +386,41 @@ export default function ChildcareCostCalculator() {
       {/* 결과 */}
       {resultReady && (
         <>
-          <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-            <p className="text-sm text-gray-300">
-              {months}개월 예상 출산·육아 비용
-            </p>
+          <div className="mt-6 rounded-2xl bg-black p-4 text-white shadow-md sm:p-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-300">
+                {months}개월 예상 출산·육아 비용
+              </p>
 
-            <p className="mt-3 text-4xl font-bold">
-              {formatWon(totalChildcareCost)}원
-            </p>
+              <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+                {formatWon(totalChildcareCost)}원
+              </p>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              초기 비용 + 월별 육아비용 × 계산 기간
-            </p>
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  초기 비용
+                </p>
 
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(initialCost)}원
+                </p>
+              </div>
 
-            <p className="text-sm text-gray-300">
-              월 예상 육아비용
-            </p>
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  월 예상 육아비용
+                </p>
 
-            <p className="mt-2 text-2xl font-bold">
-              {formatWon(monthlyChildcareCost)}원
-            </p>
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(monthlyChildcareCost)}원
+                </p>
+              </div>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              입력한 월별 비용 합계
+            <p className="mt-4 text-center text-xs leading-5 text-gray-400">
+              초기 비용과 입력한 월별 육아비용을 계산 기간만큼 반영했어요.
             </p>
           </div>
 
@@ -433,31 +458,15 @@ export default function ChildcareCostCalculator() {
               </p>
             </div>
 
-            <div className="mt-6 space-y-5">
-              {costItems.map((item) => (
-                <div key={item.label}>
-                  <div className="flex justify-between gap-4 text-sm">
-                    <span className="font-medium text-gray-700">
-                      {item.label}
-                    </span>
-
-                    <span className="shrink-0 text-gray-500">
-                      {formatWon(item.amount)}원
-                    </span>
-                  </div>
-
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-                    <div
-                      className="h-full rounded-full bg-gray-800"
-                      style={{
-                        width: `${Math.min(
-                          getPercentage(item.amount),
-                          100
-                        )}%`,
-                      }}
-                    />
-                  </div>
-                </div>
+            <div className="mt-6 space-y-4">
+              {sortedCostItems.map((item) => (
+                <CostRow
+                  key={item.label}
+                  label={item.label}
+                  amount={item.amount}
+                  total={totalChildcareCost}
+                  color={item.color}
+                />
               ))}
             </div>
 
@@ -474,11 +483,11 @@ export default function ChildcareCostCalculator() {
       {/* SEO 콘텐츠 */}
       <section className="mt-6 space-y-3">
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             👶 출산·육아 비용 계산기란?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             출산을 준비할 때는 병원비와 산후조리 비용,
             육아용품 등 초기 비용이 발생할 수 있습니다.
@@ -498,11 +507,11 @@ export default function ChildcareCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             출산·육아 비용은 어떻게 계산하나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             먼저 출산과 관련된 초기 비용을 합산합니다.
           </p>
@@ -537,11 +546,11 @@ export default function ChildcareCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             어떤 비용을 포함하나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             초기 비용으로 출산 관련 비용, 병원·진료비,
             산후조리 비용, 육아용품을 입력할 수 있습니다.
@@ -562,11 +571,11 @@ export default function ChildcareCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자주 묻는 질문
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-gray-900">
@@ -667,3 +676,61 @@ function InputRow({
   );
 }
 
+function CostRow({
+  label,
+  amount,
+  total,
+  color,
+}: {
+  label: string;
+  amount: number;
+  total: number;
+  color: "blue" | "orange" | "emerald";
+}) {
+  const percentage =
+    total > 0
+      ? Math.round((amount / total) * 1000) / 10
+      : 0;
+
+  const colorStyles = {
+    blue: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    orange: {
+      text: "text-orange-600",
+      bar: "bg-orange-500",
+    },
+    emerald: {
+      text: "text-emerald-600",
+      bar: "bg-emerald-500",
+    },
+  };
+
+  const style = colorStyles[color];
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-2 text-sm">
+        <span className="min-w-0 font-medium text-gray-700">
+          {label}
+        </span>
+
+        <span
+          className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
+        >
+          {formatWon(amount)}원 · {percentage}%
+        </span>
+      </div>
+
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
+        <div
+          className={`h-full rounded-full ${style.bar}`}
+          style={{
+            width: `${Math.min(percentage, 100)}%`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
