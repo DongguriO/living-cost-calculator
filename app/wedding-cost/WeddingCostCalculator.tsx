@@ -18,6 +18,11 @@ const initialValues = {
   other: "",
 };
 
+const formatWon = (value: number) =>
+  new Intl.NumberFormat("ko-KR", {
+    maximumFractionDigits: 0,
+  }).format(Math.round(value));
+
 export default function WeddingCostCalculator() {
   const [values, setValues] = useState(initialValues);
 
@@ -50,18 +55,66 @@ export default function WeddingCostCalculator() {
     other;
 
   const costItems = [
-    { label: "예식장 대관료", amount: venue },
-    { label: "식사 비용", amount: mealCost },
-    { label: "스튜디오", amount: studio },
-    { label: "드레스", amount: dress },
-    { label: "메이크업", amount: makeup },
-    { label: "사진·영상", amount: photography },
-    { label: "웨딩용품", amount: weddingItems },
-    { label: "신혼여행", amount: honeymoon },
-    { label: "예물·반지", amount: rings },
-    { label: "답례품", amount: gifts },
-    { label: "기타 비용", amount: other },
+    {
+      label: "예식장 대관료",
+      amount: venue,
+      color: "blue" as const,
+    },
+    {
+      label: "식사 비용",
+      amount: mealCost,
+      color: "blue" as const,
+    },
+    {
+      label: "스튜디오",
+      amount: studio,
+      color: "orange" as const,
+    },
+    {
+      label: "드레스",
+      amount: dress,
+      color: "orange" as const,
+    },
+    {
+      label: "메이크업",
+      amount: makeup,
+      color: "orange" as const,
+    },
+    {
+      label: "사진·영상",
+      amount: photography,
+      color: "orange" as const,
+    },
+    {
+      label: "웨딩용품",
+      amount: weddingItems,
+      color: "orange" as const,
+    },
+    {
+      label: "신혼여행",
+      amount: honeymoon,
+      color: "emerald" as const,
+    },
+    {
+      label: "예물·반지",
+      amount: rings,
+      color: "emerald" as const,
+    },
+    {
+      label: "답례품",
+      amount: gifts,
+      color: "emerald" as const,
+    },
+    {
+      label: "기타 비용",
+      amount: other,
+      color: "emerald" as const,
+    },
   ];
+
+  const sortedCostItems = [...costItems].sort(
+    (a, b) => b.amount - a.amount
+  );
 
   const largestCostItem = costItems.reduce(
     (largest, item) =>
@@ -115,11 +168,6 @@ export default function WeddingCostCalculator() {
     setValues(initialValues);
   };
 
-  const formatWon = (value: number) =>
-    new Intl.NumberFormat("ko-KR", {
-      maximumFractionDigits: 0,
-    }).format(Math.round(value));
-
   const resultReady =
     venue > 0 ||
     meal > 0 ||
@@ -141,8 +189,8 @@ export default function WeddingCostCalculator() {
       headerTitle="결혼/웨딩 비용"
     >
       {/* 입력 */}
-      <div className="rounded-2xl bg-white p-6 shadow-md">
-        <h2 className="text-xl font-semibold text-gray-900">
+      <div className="rounded-2xl bg-white p-4 shadow-md sm:p-6">
+        <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
           결혼·웨딩 조건 입력
         </h2>
 
@@ -320,31 +368,41 @@ export default function WeddingCostCalculator() {
       {/* 결과 */}
       {resultReady && (
         <>
-          <div className="mt-6 rounded-2xl bg-black p-6 text-center text-white shadow-md">
-            <p className="text-sm text-gray-300">
-              결혼·웨딩 예상 비용
-            </p>
+          <div className="mt-6 rounded-2xl bg-black p-4 text-white shadow-md sm:p-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-300">
+                결혼·웨딩 예상 비용
+              </p>
 
-            <p className="mt-3 text-4xl font-bold">
-              {formatWon(totalWeddingCost)}원
-            </p>
+              <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+                {formatWon(totalWeddingCost)}원
+              </p>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              예식 + 준비비 + 신혼여행 등 입력 비용 기준
-            </p>
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  하객 수
+                </p>
 
-            <div className="mx-auto my-5 h-px max-w-xs bg-gray-700" />
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(guests)}명
+                </p>
+              </div>
 
-            <p className="text-sm text-gray-300">
-              하객 {formatWon(guests)}명 기준 식사비
-            </p>
+              <div className="rounded-xl bg-gray-900 px-3 py-4 text-center">
+                <p className="text-xs text-gray-400">
+                  예상 식사비
+                </p>
 
-            <p className="mt-2 text-2xl font-bold">
-              {formatWon(mealCost)}원
-            </p>
+                <p className="mt-2 text-sm font-semibold sm:text-base">
+                  {formatWon(mealCost)}원
+                </p>
+              </div>
+            </div>
 
-            <p className="mt-2 text-xs text-gray-400">
-              1인 {formatWon(meal)}원 기준
+            <p className="mt-4 text-center text-xs leading-5 text-gray-400">
+              예식장, 식사, 스드메, 신혼여행 등 입력한 비용을 기준으로 계산했어요.
             </p>
           </div>
 
@@ -368,31 +426,15 @@ export default function WeddingCostCalculator() {
               </p>
             </div>
 
-            <div className="mt-6 space-y-5">
-              {costItems.map((item) => (
-                <div key={item.label}>
-                  <div className="flex justify-between gap-4 text-sm">
-                    <span className="font-medium text-gray-700">
-                      {item.label}
-                    </span>
-
-                    <span className="shrink-0 text-gray-500">
-                      {formatWon(item.amount)}원
-                    </span>
-                  </div>
-
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
-                    <div
-                      className="h-full rounded-full bg-gray-800"
-                      style={{
-                        width: `${Math.min(
-                          getPercentage(item.amount),
-                          100
-                        )}%`,
-                      }}
-                    />
-                  </div>
-                </div>
+            <div className="mt-6 space-y-4">
+              {sortedCostItems.map((item) => (
+                <CostRow
+                  key={item.label}
+                  label={item.label}
+                  amount={item.amount}
+                  total={totalWeddingCost}
+                  color={item.color}
+                />
               ))}
             </div>
 
@@ -408,11 +450,11 @@ export default function WeddingCostCalculator() {
       {/* SEO 콘텐츠 */}
       <section className="mt-6 space-y-3">
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             💍 결혼/웨딩 비용 계산기란?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             결혼을 준비할 때는 예식장 비용뿐만 아니라
             식사비, 스드메, 사진·영상, 신혼여행 등
@@ -428,11 +470,11 @@ export default function WeddingCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             결혼 비용은 어떻게 계산하나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             식사비는 1인 식사비에 예상 하객 수를 곱해 계산합니다.
           </p>
@@ -451,11 +493,11 @@ export default function WeddingCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             어떤 비용을 포함하나요?
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <p className="text-sm leading-7 text-gray-600">
             예식장 대관료, 식사비, 스튜디오, 드레스,
             메이크업, 사진·영상, 웨딩용품, 신혼여행,
@@ -471,11 +513,11 @@ export default function WeddingCostCalculator() {
         </details>
 
         <details className="overflow-hidden rounded-2xl bg-white shadow-md">
-          <summary className="cursor-pointer px-6 py-5 text-lg font-semibold text-gray-900">
+          <summary className="cursor-pointer px-5 py-4 text-base font-semibold leading-6 text-gray-900 sm:px-6 sm:py-5 sm:text-lg">
             자주 묻는 질문
           </summary>
 
-          <div className="border-t border-gray-100 px-6 pb-6 pt-5">
+          <div className="border-t border-gray-100 px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
           <div className="space-y-5">
             <div>
               <h3 className="font-semibold text-gray-900">
@@ -553,9 +595,68 @@ function InputRow({
         className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-3 text-right outline-none transition focus:border-black sm:px-4"
       />
 
-      <span className="w-6 shrink-0 whitespace-nowrap text-right text-sm text-gray-500 sm:w-14">
+      <span className="w-10 shrink-0 whitespace-nowrap text-right text-sm text-gray-500 sm:w-14">
         {unit}
       </span>
+    </div>
+  );
+}
+
+function CostRow({
+  label,
+  amount,
+  total,
+  color,
+}: {
+  label: string;
+  amount: number;
+  total: number;
+  color: "blue" | "orange" | "emerald";
+}) {
+  const percentage =
+    total > 0
+      ? Math.round((amount / total) * 1000) / 10
+      : 0;
+
+  const colorStyles = {
+    blue: {
+      text: "text-blue-600",
+      bar: "bg-blue-500",
+    },
+    orange: {
+      text: "text-orange-600",
+      bar: "bg-orange-500",
+    },
+    emerald: {
+      text: "text-emerald-600",
+      bar: "bg-emerald-500",
+    },
+  };
+
+  const style = colorStyles[color];
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-2 text-sm">
+        <span className="min-w-0 font-medium text-gray-700">
+          {label}
+        </span>
+
+        <span
+          className={`shrink-0 whitespace-nowrap font-medium ${style.text}`}
+        >
+          {formatWon(amount)}원 · {percentage}%
+        </span>
+      </div>
+
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
+        <div
+          className={`h-full rounded-full ${style.bar}`}
+          style={{
+            width: `${Math.min(percentage, 100)}%`,
+          }}
+        />
+      </div>
     </div>
   );
 }
